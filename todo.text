@@ -1,0 +1,19 @@
+Şimdi sana sıra sıra özelliklerini anlatacağım ;
+Kafeler ve kullancılar var (admin de var tabi ki )
+Kafelerin , yol tarifi için adres, menu (yemek içecek, tatlı vs (burası da dinamik olacak şekilde ) bu kategoriler altında ürünleri var ) ,kampanyası ve etkinlikleri var .
+ Kafe sahipleri, uygulama üzerinden etkinlik planlayıp bu etkinlikleri duyurabilir. Bu planlayıcı, etkinlik yönetimini kolaylaştırır.
+Kafelerin bildirimleri var (gönderdiğim bildirimleri db tutup kafeye göstereceğim)
+
+User favorileri var (sanat , kültür , vs )
+Userın 5 tane seçtiği aktif kafe olabilir (bunları güncelleyebilir ) 
+User seçtiği 5 kafenin , favorilere eklenmiş kullanıclar ile eşleşmesi sağlanacak .
+User kafenin etkinliklerine katılacak 
+User kafenin kampanyasına bir kod verilecek onu kafeye gösterebilecek 
+User profil bilgilerini güncelleme 
+User , eşleştiği userlar ile mesajlaşabilmeli (burada image file vs de gönderebilmeli) Gizli Beğeni olmalı(sadece eşleştiğinde görmeli)
+User Grup Oluşturma ve Toplu Buluşmalar
+User Kafe Puanlama ve Yorum Sistemi
+User etkinliklere katıldıkça Sadakat Sistemi: Puan Toplayarak Ödüller Kazanın
+User Gerçek Hayatta Tanışma Temalı Mini Görevler
+Userın favori kafelerindeki aktif sayı ve toplamda kaç kullanıcı olduğu
+
