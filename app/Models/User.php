@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'profile_picture', 
     ];
 
     /**
@@ -44,5 +45,36 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // İlişkiler
+    public function cafes()
+    {
+        return $this->hasMany(Business::class);
+    }
+
+    public function favoriteCafes()
+    {
+        return $this->belongsToMany(Business::class, 'user_favorite_cafes');
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
+
+    public function attendedEvents()
+    {
+        return $this->belongsToMany(Event::class, 'user_events');
+    }
+
+    public function loyaltyPoints()
+    {
+        return $this->hasOne(LoyaltyPoint::class);
+    }
+
+    public function favoriteCategories()
+    {
+        return $this->belongsToMany(Category::class, 'user_favorite_categories');
     }
 }

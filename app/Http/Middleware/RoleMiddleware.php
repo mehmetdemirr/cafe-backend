@@ -13,8 +13,18 @@ class RoleMiddleware
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next,$role): Response
     {
+        if (!$request->user() || !$request->user()->hasRole($role)) {
+            response()->json([
+                'success'=> false,
+                'data' => null,
+                'errors' => 'Bu role sahip değilsiniz',
+                'message' => "",
+                ], 400
+            );
+        }
+
         return $next($request);
     }
 }

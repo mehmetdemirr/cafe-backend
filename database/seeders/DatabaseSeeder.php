@@ -40,7 +40,7 @@ class DatabaseSeeder extends Seeder
         ]);
         $company->assignRole(UserRoleEnum::ADMIN);
 
-        $this->call([
+        $this->call(class: [
             // BusinessSeeder::class, //işletme ekle
             // CategorySeeder::class, //genel kategori ekle
             // BrandSeeder::class, //genele marka ekle

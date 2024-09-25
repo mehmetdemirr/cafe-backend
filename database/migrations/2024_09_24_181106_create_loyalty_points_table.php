@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('loyalty_points', function (Blueprint $table) {
             $table->id();
+            $table->integer('points');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('event_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

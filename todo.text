@@ -7,11 +7,10 @@ Kafelerin bildirimleri var (gönderdiğim bildirimleri db tutup kafeye gösterec
 User favorileri var (sanat , kültür , vs )
 Userın 5 tane seçtiği aktif kafe olabilir (bunları güncelleyebilir ) 
 User seçtiği 5 kafenin , favorilere eklenmiş kullanıclar ile eşleşmesi sağlanacak .
-User kafenin etkinliklerine katılacak 
+User kafenin oyun arkadaşlığını görecek
 User kafenin kampanyasına bir kod verilecek onu kafeye gösterebilecek 
 User profil bilgilerini güncelleme 
 User , eşleştiği userlar ile mesajlaşabilmeli (burada image file vs de gönderebilmeli) Gizli Beğeni olmalı(sadece eşleştiğinde görmeli)
-User Grup Oluşturma ve Toplu Buluşmalar
 User Kafe Puanlama ve Yorum Sistemi
 User etkinliklere katıldıkça Sadakat Sistemi: Puan Toplayarak Ödüller Kazanın
 User Gerçek Hayatta Tanışma Temalı Mini Görevler

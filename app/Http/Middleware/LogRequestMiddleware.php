@@ -46,7 +46,7 @@ class LogRequestMiddleware
             json_encode([
                 'status' => $response->status(),
                 'response' => $response->getContent(),
-            ],)
+            ])
         );
     }
 }
