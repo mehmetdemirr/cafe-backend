@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\ForgotPasswordController;
 use App\Http\Controllers\Api\Auth\ResetPasswordController;
 use App\Http\Controllers\Api\BusinessController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
@@ -20,14 +21,24 @@ Route::middleware(["log"])->group(function () {
         Route::get('user', [UserController::class, 'user']);
         Route::put('user/update', [UserController::class, 'update']);
 
+        Route::group(['prefix' => 'categories'], function () {
+            Route::get('/', [CategoryController::class, 'index']); 
+            Route::get('/{id}', [CategoryController::class, 'show']); 
+            Route::post('/', [CategoryController::class, 'store']); 
+            Route::put('/{id}', [CategoryController::class, 'update']); 
+            Route::delete('/{id}', [CategoryController::class, 'destroy']); 
+        });
+        Route::group(['prefix' => 'user/favorite-categories'], function () {
+            Route::get('/', [CategoryController::class, 'userFavorites']); 
+            Route::post('/{categoryId}', [CategoryController::class, 'addToFavorites']); 
+            Route::delete('/{categoryId}', [CategoryController::class, 'removeFromFavorites']);
+        });
+
         Route::group(['prefix' => 'business'], function () {
             // Kullanıcının favori işletmeleri (businesses)
             Route::get('/favorites', [BusinessController::class, 'favoriteBusinesses']);
-            // İşletmeye favori ekleme
             Route::post('{id}/favorite', [BusinessController::class, 'addToFavorites']);
-            // İşletmeden favori kaldırma
             Route::delete('{id}/favorite', [BusinessController::class, 'removeFromFavorites']);
-            // İşletmeye puan verme
             Route::post('{id}/rate', [BusinessController::class, 'rate']);
             // İşletme puanlarını listeleme
             Route::get('{id}/ratings', [BusinessController::class, 'ratings']);
@@ -36,8 +47,9 @@ Route::middleware(["log"])->group(function () {
             Route::delete('/{id}', [BusinessController::class, 'destroy']);
             Route::get('/{id}', [BusinessController::class, 'show']);
             Route::get('/', [BusinessController::class, 'index']);
-            
         });
+
+        
         
         // //admin route
         // Route::middleware(["role:admin"])->group(function () {
