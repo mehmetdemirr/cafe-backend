@@ -13,7 +13,7 @@ class MenuItemPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class MenuItemPolicy
      */
     public function view(User $user, MenuItem $menuItem): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -29,7 +29,7 @@ class MenuItemPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -37,7 +37,7 @@ class MenuItemPolicy
      */
     public function update(User $user, MenuItem $menuItem): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -45,7 +45,7 @@ class MenuItemPolicy
      */
     public function delete(User $user, MenuItem $menuItem): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -53,7 +53,7 @@ class MenuItemPolicy
      */
     public function restore(User $user, MenuItem $menuItem): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -61,6 +61,6 @@ class MenuItemPolicy
      */
     public function forceDelete(User $user, MenuItem $menuItem): bool
     {
-        //
+        return true;
     }
 }

@@ -13,7 +13,7 @@ class CafeRatingPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class CafeRatingPolicy
      */
     public function view(User $user, CafeRating $cafeRating): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -29,7 +29,7 @@ class CafeRatingPolicy
      */
     public function create(User $user): bool
     {
-        //
+         return true;
     }
 
     /**
@@ -37,7 +37,7 @@ class CafeRatingPolicy
      */
     public function update(User $user, CafeRating $cafeRating): bool
     {
-        //
+         return true;
     }
 
     /**
@@ -45,7 +45,7 @@ class CafeRatingPolicy
      */
     public function delete(User $user, CafeRating $cafeRating): bool
     {
-        //
+         return true;
     }
 
     /**
@@ -53,7 +53,7 @@ class CafeRatingPolicy
      */
     public function restore(User $user, CafeRating $cafeRating): bool
     {
-        //
+         return true;
     }
 
     /**
@@ -61,6 +61,6 @@ class CafeRatingPolicy
      */
     public function forceDelete(User $user, CafeRating $cafeRating): bool
     {
-        //
+         return true;
     }
 }

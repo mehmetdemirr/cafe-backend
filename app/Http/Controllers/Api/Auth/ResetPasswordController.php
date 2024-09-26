@@ -21,7 +21,7 @@ class ResetPasswordController extends Controller
             return response()->json([
                 'success' => false,
                 'data' => null,
-                'errors' => $otp2,
+                'errors' => $otp2->message,
                 'message' => null,
             ], 400);
 

@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('address');
             $table->string('qr_code')->nullable();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->unique('user_id');
+            $table->foreignId('user_id')->constrained("users")->onDelete('cascade')->unique();
             $table->timestamps();
         });
     }

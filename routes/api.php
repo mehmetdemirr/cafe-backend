@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\ForgotPasswordController;
 use App\Http\Controllers\Api\Auth\ResetPasswordController;
+use App\Http\Controllers\Api\BusinessController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
@@ -18,23 +19,38 @@ Route::middleware(["log"])->group(function () {
         Route::post('auth/logout', [AuthController::class, 'logout']);
         Route::get('user', [UserController::class, 'user']);
         Route::put('user/update', [UserController::class, 'update']);
+
+        Route::group(['prefix' => 'business'], function () {
+            // Kullanıcının favori işletmeleri (businesses)
+            Route::get('/favorites', [BusinessController::class, 'favoriteBusinesses']);
+            // İşletmeye favori ekleme
+            Route::post('{id}/favorite', [BusinessController::class, 'addToFavorites']);
+            // İşletmeden favori kaldırma
+            Route::delete('{id}/favorite', [BusinessController::class, 'removeFromFavorites']);
+            // İşletmeye puan verme
+            Route::post('{id}/rate', [BusinessController::class, 'rate']);
+            // İşletme puanlarını listeleme
+            Route::get('{id}/ratings', [BusinessController::class, 'ratings']);
+            Route::post('/', [BusinessController::class, 'store']);
+            Route::put('{id}', [BusinessController::class, 'update']);
+            Route::delete('/{id}', [BusinessController::class, 'destroy']);
+            Route::get('/{id}', [BusinessController::class, 'show']);
+            Route::get('/', [BusinessController::class, 'index']);
+            
+        });
         
-        //admin route
-        Route::middleware(["role:admin"])->group(function () {
+        // //admin route
+        // Route::middleware(["role:admin"])->group(function () {
             
-        });
-    
-        //company route
-        Route::middleware(["role:company"])->group(function () {
+        // });
+        // //company route
+        // Route::middleware(["role:company"])->group(function () {
             
-        });
-    
-        //user route
-        Route::middleware(["role:user"])->group(function () {
+        // });
+        // //user route
+        // Route::middleware(["role:user"])->group(function () {
            
-        });
-    
-    
+        // }); 
     });
     
     Route::middleware(["throttle:30,1"])->group(function () {

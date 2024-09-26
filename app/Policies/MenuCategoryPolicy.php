@@ -13,7 +13,7 @@ class MenuCategoryPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class MenuCategoryPolicy
      */
     public function view(User $user, MenuCategory $menuCategory): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -29,7 +29,7 @@ class MenuCategoryPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -37,7 +37,7 @@ class MenuCategoryPolicy
      */
     public function update(User $user, MenuCategory $menuCategory): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -45,7 +45,7 @@ class MenuCategoryPolicy
      */
     public function delete(User $user, MenuCategory $menuCategory): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -53,7 +53,7 @@ class MenuCategoryPolicy
      */
     public function restore(User $user, MenuCategory $menuCategory): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -61,6 +61,6 @@ class MenuCategoryPolicy
      */
     public function forceDelete(User $user, MenuCategory $menuCategory): bool
     {
-        //
+        return true;
     }
 }
