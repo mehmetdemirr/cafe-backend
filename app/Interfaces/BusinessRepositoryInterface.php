@@ -13,7 +13,7 @@ interface BusinessRepositoryInterface
     public function all(): array;
     public function addToFavorites(int $businessId, int $userId): bool;
     public function removeFromFavorites(int $businessId, int $userId): bool;
-    public function rateBusiness(int $businessId, int $userId, int $rating): bool;
+    public function rateBusiness(int $businessId, int $userId, int $rating, ?string $comment = null): bool;
     public function getBusinessRatings(int $businessId): array;
     public function getFavoriteBusinesses(int $userId): array;
     public function exists(array $conditions): bool;

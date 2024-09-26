@@ -8,6 +8,7 @@ use App\Interfaces\BusinessRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Requests\BusinessCreateRequest;
 use App\Http\Requests\BusinessUpdateRequest;
+use App\Http\Requests\RateBusinessRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -99,6 +100,7 @@ class BusinessController extends Controller
         }
         return response()->json([
             'success' => false,
+            'data' => null,
             'message' => 'İşletme bulunamadı.',
             'errors' => null,
         ], 404);
@@ -127,9 +129,9 @@ class BusinessController extends Controller
         ], 200);
     }
 
-    public function addToFavorites($id): JsonResponse
+    public function addToFavorites(Request $request,$id): JsonResponse
     {
-        $userId = Auth::id();
+        $userId = $request->user()->id;
         // İşletmenin var olup olmadığını kontrol et
         if (!$this->businessRepository->exists(['id' => $id])) {
             return response()->json([
@@ -166,9 +168,9 @@ class BusinessController extends Controller
         ], 404);
     }
     
-    public function removeFromFavorites($id): JsonResponse
+    public function removeFromFavorites(Request $request,$id): JsonResponse
     {
-        $userId = Auth::id();
+        $userId = $request->user()->id;
         $removed = $this->businessRepository->removeFromFavorites($id, $userId);
         return $removed ? response()->json([
             'success' => true,
@@ -183,26 +185,46 @@ class BusinessController extends Controller
         ], 404);
     }
 
-    public function rate($id, Request $request): JsonResponse
+    public function rate($id, RateBusinessRequest $request): JsonResponse
     {
-        $userId = Auth::id();
+        $userId = $request->user()->id;
         $rating = $request->input('rating');
-        $rated = $this->businessRepository->rateBusiness($id, $userId, $rating);
-        return $rated ? response()->json([
+        $comment = $request->input('comment'); // Yorum al
+
+        // Puanlama işlemi
+        $rated = $this->businessRepository->rateBusiness($id, $userId, $rating, $comment);
+
+        // Eğer işletme yoksa veya puanlama başarısızsa uygun mesaj döndür
+        if (!$rated) {
+            return response()->json([
+                'success' => false,
+                'data' => null,
+                'message' => 'Belirtilen işletme bulunamadı veya puanlama yapılamadı.',
+                'errors' => null,
+            ], 404);
+        }
+
+        return response()->json([
             'success' => true,
             'data' => null,
             'message' => 'İşletme puanlandı.',
             'errors' => null,
-        ], 200) : response()->json([
-            'success' => false,
-            'data' => null,
-            'message' => 'İşletme puanlanamadı.',
-            'errors' => null,
-        ], 404);
+        ], 200);
     }
 
     public function ratings($id): JsonResponse
     {
+        // İşletmenin var olup olmadığını kontrol et
+        if (!$this->businessRepository->exists(['id' => $id])) {
+            return response()->json([
+                'success' => false,
+                'data' => null,
+                'message' => 'Belirtilen işletme bulunamadı.',
+                'errors' => null,
+            ], 404);
+        }
+
+        // İşletme mevcutsa puanlarını getir
         $ratings = $this->businessRepository->getBusinessRatings($id);
         return response()->json([
             'success' => true,

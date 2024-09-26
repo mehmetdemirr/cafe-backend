@@ -3,6 +3,7 @@
 namespace App\Repositories;
 use App\Interfaces\BusinessRepositoryInterface;
 use App\Models\Business;
+use App\Models\BusinessRating;
 use App\Models\User;
 use App\Models\UserFavoriteBusiness;
 use App\Models\CafeRating;
@@ -52,18 +53,27 @@ class BusinessRepository implements BusinessRepositoryInterface
         return UserFavoriteBusiness::where('business_id', $businessId)->where('user_id', $userId)->delete() > 0;
     }
 
-    public function rateBusiness(int $businessId, int $userId, int $rating): bool
+    public function rateBusiness(int $businessId, int $userId, int $rating, ?string $comment = null): bool
     {
-        $cafeRating = CafeRating::updateOrCreate(
+        // İşletmenin var olup olmadığını kontrol et
+        if (!Business::where('id', $businessId)->exists()) {
+            return false; // İşletme bulunamadı
+        }
+
+        $cafeRating = BusinessRating::updateOrCreate(
             ['business_id' => $businessId, 'user_id' => $userId],
-            ['rating' => $rating]
+            [
+                'rating' => $rating,
+                'comment' => $comment,
+            ]
         );
+        
         return (bool)$cafeRating;
     }
 
     public function getBusinessRatings(int $businessId): array
     {
-        return CafeRating::where('business_id', $businessId)->get()->toArray();
+        return BusinessRating::where('business_id', $businessId)->get()->toArray();
     }
 
     public function getFavoriteBusinesses(int $userId): array
