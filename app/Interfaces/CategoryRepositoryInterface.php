@@ -19,4 +19,5 @@ interface CategoryRepositoryInterface
     public function addCategoryToFavorites(int $categoryId, int $userId): bool;
 
     public function removeCategoryFromFavorites(int $categoryId, int $userId): bool;
+    public function isCategoryInFavorites(int $categoryId, int $userId): bool;
 }

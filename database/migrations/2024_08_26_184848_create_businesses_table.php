@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('businesses', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('address');
+            $table->string('name')->nullable();;
+            $table->string('address')->nullable();;
             $table->string('qr_code')->nullable();
             $table->unique('user_id');
             $table->foreignId('user_id')->constrained("users")->onDelete('cascade')->unique();

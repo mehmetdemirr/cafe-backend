@@ -25,7 +25,7 @@ class RegisterRequest extends BaseRequest
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users,email|max:255',
             'password' => 'required|string|min:6|confirmed',
-            'role' => 'sometimes|string|in:user,company',
+            'role' => 'sometimes|string|in:user,business',
         ];
     }
 

@@ -57,4 +57,11 @@ class CategoryRepository implements CategoryRepositoryInterface
     {
         return UserFavoriteCategory::where('category_id', $categoryId)->where('user_id', $userId)->delete() > 0;
     }
+
+    public function isCategoryInFavorites(int $categoryId, int $userId): bool
+    {
+        return UserFavoriteCategory::where('category_id', $categoryId)
+                                ->where('user_id', $userId)
+                                ->exists();
+    }
 }

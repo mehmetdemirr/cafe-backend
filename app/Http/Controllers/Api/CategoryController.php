@@ -121,18 +121,45 @@ class CategoryController extends Controller
     public function addToFavorites( Request $request,$categoryId): JsonResponse
     {
         $userId = $request->user()->id;
-        $added = $this->categoryRepository->addCategoryToFavorites($categoryId, $userId);
-        return $added ? response()->json([
-            'success' => true,
-            'data' => null,
-            'message' => 'Kategori favorilere eklendi.',
-            'errors' => null,
-        ], 200) : response()->json([
+
+    // Kategori var mı kontrol et
+    $categoryExists = $this->categoryRepository->find($categoryId);
+
+    if (!$categoryExists) {
+        return response()->json([
             'success' => false,
             'data' => null,
-            'message' => 'Kategori favorilere eklenemedi.',
+            'message' => 'Kategori bulunamadı.',
             'errors' => null,
         ], 404);
+    }
+
+    // Kategori zaten favorilerde mi kontrol et
+    $alreadyFavorite = $this->categoryRepository->isCategoryInFavorites($categoryId, $userId);
+
+    if ($alreadyFavorite) {
+        return response()->json([
+            'success' => false,
+            'data' => null,
+            'message' => 'Kategori zaten favorilerde.',
+            'errors' => null,
+        ], 200);
+    }
+
+    // Kategoriyi favorilere ekle
+    $added = $this->categoryRepository->addCategoryToFavorites($categoryId, $userId);
+
+    return $added ? response()->json([
+        'success' => true,
+        'data' => null,
+        'message' => 'Kategori favorilere eklendi.',
+        'errors' => null,
+    ], 200) : response()->json([
+        'success' => false,
+        'data' => null,
+        'message' => 'Kategori favorilere eklenemedi.',
+        'errors' => null,
+    ], 404);
     }
 
     // Kullanıcının favorilerinden kategori çıkar

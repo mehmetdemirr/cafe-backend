@@ -25,13 +25,13 @@ class BusinessController extends Controller
     {
         $userId = $request->user()->id;
 
-        // Kullanıcının zaten bir kafesi var mı kontrol et
+        // Kullanıcının zaten bir işletmesi var mı kontrol et
         if ($this->businessRepository->exists(['user_id' => $userId])) {
             return response()->json([
                 'success' => false,
                 'data' => null,
-                'message' => 'Bir kullanıcı yalnızca bir tane kafe oluşturabilir.',
-                'errors' => 'Kullanıcı zaten bir kafeye sahip.',
+                'message' => 'Bir kullanıcı yalnızca bir tane işletme oluşturabilir.',
+                'errors' => 'Kullanıcı zaten bir işletmeye sahip.',
             ], 400);
         }
 

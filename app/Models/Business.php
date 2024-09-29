@@ -44,7 +44,7 @@ class Business extends Model
 
     public function ratings()
     {
-        return $this->hasMany(CafeRating::class);
+        return $this->hasMany(BusinessRating::class);
     }
 
     public function favoriteByUsers()

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\enum\UserRoleEnum;
+use App\Models\Business;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -24,21 +25,23 @@ class DatabaseSeeder extends Seeder
         ]);
         $user->assignRole(UserRoleEnum::USER);
 
-        $company = User::factory()->create([
-            'name' => 'Company Kullanıcısı',
-            'email' => 'company@gmail.com',
+        $business = User::factory()->create([
+            'name' => 'Business Kullanıcısı',
+            'email' => 'business@gmail.com',
         ]);
-        //TODO burda işletme ise orda da kayıt edilecek
-        // $business = Business::create([
-        //     "user_id" => $company->id,
-        // ]);
-        $company->assignRole(UserRoleEnum::COMPANY);
 
-        $company = User::factory()->create([
+        //burda işletme ise orda da kayıt edilecek
+        $business = Business::create([
+            "user_id" => $business->id,
+        ]);
+        $business->assignRole(UserRoleEnum::BUSINESS);
+
+        //admin
+        $admin = User::factory()->create([
             'name' => 'Admin Kullanıcısı',
             'email' => 'admin@gmail.com',
         ]);
-        $company->assignRole(UserRoleEnum::ADMIN);
+        $admin->assignRole(UserRoleEnum::ADMIN);
 
         $this->call(class: [
             // BusinessSeeder::class, //işletme ekle

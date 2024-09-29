@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
+use App\enum\UserRoleEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Interfaces\BusinessRepositoryInterface;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -14,6 +16,13 @@ use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
+    protected $businessRepository;
+
+    public function __construct(BusinessRepositoryInterface $businessRepository)
+    {
+        $this->businessRepository = $businessRepository;
+    }
+
     public function login(LoginRequest $request)
     {
         $credentials = $request->only('email', 'password');
@@ -55,21 +64,26 @@ class AuthController extends Controller
 
         $role = $request->validated('role');
 
-        // if($role === UserRole::USER)
-        // {
-        //     // Kullanıcı oluşturulduktan sonra sepet oluştur(Kullanıcı)
-        //     $this->cartRepository->createCart($user->id);
-        // }
-        // else if($role === UserRole::COMPANY)
-        // {
-        //     //Kullanıcı oluşturduktan sonra business oluştur.(Şirket)
-        //     $this->businessRepository->create([
-        //         "user_id" => $user->id,
-        //     ]);
-        // }else{
-        //    //
-        // }
+        // Rol COMPANY ise işletme oluşturma işlemi
+        if ($role === UserRoleEnum::BUSINESS) {
+            // Kullanıcının zaten bir işletmesi var mı kontrol et
+            if ($this->businessRepository->exists(['user_id' => $user->id])) {
+                return response()->json([
+                    'success' => false,
+                    'data' => null,
+                    'message' => 'Kullanıcı zaten bir işletmeye sahip.',
+                    'errors' => 'Bir kullanıcı yalnızca bir işletme oluşturabilir.',
+                ], 400);
+            }
 
+            // İşletme oluştur
+            $this->businessRepository->create([
+                "user_id" => $user->id,
+                // Diğer işletme bilgilerini de buraya ekleyebilirsiniz.
+            ]);
+        }
+
+        // Kullanıcıya rol atama işlemi
         $user->assignRole($role);
         $token = $user->createToken('token')->plainTextToken;
 
@@ -81,8 +95,7 @@ class AuthController extends Controller
             ],
             'errors' => null,
             'message' => "Kayıt başarılı",
-            ],200,
-        );
+        ], 200);
     }
 
     public function logout(): JsonResponse

@@ -17,7 +17,7 @@ class RoleSeeder extends Seeder
         // Roller oluştur
         $superAdminRole = Role::create(['name' => UserRoleEnum::SUPERADMIN]);
         $adminRole = Role::create(['name' => UserRoleEnum::ADMIN]);
-        $companyRole = Role::create(['name' => UserRoleEnum::COMPANY]);
+        $companyRole = Role::create(['name' => UserRoleEnum::BUSINESS]);
         $userRole = Role::create(['name' => UserRoleEnum::USER]);
     }
 }
