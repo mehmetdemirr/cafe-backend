@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\enum\UserRoleEnum;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -30,6 +32,16 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];
+    }
+
+    /**
+     * Create a user with the 'user' role.
+     */
+    public function withUserRole(): static
+    {
+        return $this->afterCreating(function (User $user) {
+            $user->assignRole(UserRoleEnum::USER);
+        });
     }
 
     /**

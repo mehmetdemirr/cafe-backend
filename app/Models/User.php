@@ -78,4 +78,10 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Category::class, 'user_favorite_categories');
     }
+
+    public function campaigns()
+    {
+        return $this->belongsToMany(Campaign::class, 'campaign_user')->withTimestamps();
+    }
+    
 }

@@ -22,4 +22,9 @@ class Campaign extends Model
     {
         return $this->belongsTo(Business::class);
     }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'campaign_user')->withTimestamps();
+    }
 }

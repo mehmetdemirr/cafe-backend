@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('businesses', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();;
-            $table->string('address')->nullable();;
-            $table->string('qr_code')->nullable();
-            $table->unique('user_id');
-            $table->foreignId('user_id')->constrained("users")->onDelete('cascade')->unique();
+            $table->string('name')->nullable();
+            $table->string('address')->nullable();
+            $table->string('qr_code')->nullable()->unique();
+            // user_id alanını foreign key ve unique olarak tanımlıyoruz
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->unique();
             $table->timestamps();
         });
     }

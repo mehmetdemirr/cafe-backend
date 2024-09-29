@@ -16,7 +16,12 @@ return new class extends Migration
             $table->string('name');
             $table->decimal('price', 8, 2);
             $table->text('description')->nullable();
-            $table->foreignId('menu_category_id')->constrained()->onDelete('cascade');
+            $table->foreignId('menu_category_id')->constrained('menu_categories')->onDelete('cascade');
+            $table->foreignId('business_id')->constrained('businesses')->onDelete('cascade'); // İşletme ID'si
+            $table->integer('views')->default(0); // Görüntülenme sayısı
+            $table->boolean('is_available')->default(true); // Ürün durumu
+            $table->text('additional_info')->nullable(); // Ek bilgi
+            $table->integer('calories')->nullable(); // Kalori bilgisi
             $table->timestamps();
         });
     }

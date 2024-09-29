@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Kullanıcı ID'si
             $table->foreignId('campaign_id')->constrained()->onDelete('cascade'); // Kampanya ID'si
-            $table->timestamps(); // Katılma tarihini tutmak için
+            $table->timestamps();
         });
     }
 

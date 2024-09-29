@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->integer('rating');
             $table->text('comment')->nullable();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('business_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade')->unique();
+            $table->foreignId('business_id')->constrained()->onDelete('cascade')->unique();
             $table->timestamps();
         });
     }

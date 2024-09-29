@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Business;
+use App\Models\MenuCategory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,15 +11,13 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class MenuCategoryFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
+    protected $model = MenuCategory::class;
+
+    public function definition()
     {
         return [
-            //
+            'name' => $this->faker->word, // Rastgele bir kategori adı
+            'business_id' => Business::inRandomOrder()->first()->id, // Rastgele bir iş id'si al
         ];
     }
 }

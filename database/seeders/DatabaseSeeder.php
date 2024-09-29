@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         //burda işletme ise orda da kayıt edilecek
-        $business = Business::create([
+        Business::create([
             "user_id" => $business->id,
         ]);
         $business->assignRole(UserRoleEnum::BUSINESS);
@@ -44,16 +44,14 @@ class DatabaseSeeder extends Seeder
         $admin->assignRole(UserRoleEnum::ADMIN);
 
         $this->call(class: [
-            // BusinessSeeder::class, //işletme ekle
-            // CategorySeeder::class, //genel kategori ekle
-            // BrandSeeder::class, //genele marka ekle
-            // UserSeeder::class, //kullanıcı ekle
-            // ProductSeeder::class, //ürün ekle
-            // // ProductImageSeeder::class, //ürünlere fotoğraf ekle
-            // // CartSeeder::class, //kullanıcıya sepet ekle
-            // // CartItemSeeder::class, //sepete item ekle
-            // // OrderSeeder::class, //sipariş oluştur
-            // // ReviewSeeder::class, //ürünlere yorum ekle
+            UserSeeder::class, //user ekle
+            BusinessSeeder::class , //business ekle
+            CategorySeeder::class, //genel kategori ekle
+            CampaignSeeder::class , // kampanya ekle
+            LoyaltyPointSeeder::class ,//sadakat puanı ekle
+            BusinessRatingSeeder::class ,//işletme rating ekle
+            MenuCategorySeeder::class,//işletme menü category ekle
+            MenuItemSeeder::class,//işletme menü item ekle
         ]); 
     }
 }

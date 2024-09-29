@@ -5,18 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class LoyaltyPoint extends Model
+class MenuItemImage extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'points',
-        'user_id',
+        'menu_item_id',
+        'image_url',
     ];
 
     // İlişkiler
-    public function user()
+    public function menuItem()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(MenuItem::class);
     }
 }

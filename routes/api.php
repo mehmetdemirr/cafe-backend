@@ -4,8 +4,14 @@ use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\ForgotPasswordController;
 use App\Http\Controllers\Api\Auth\ResetPasswordController;
 use App\Http\Controllers\Api\BusinessController;
+use App\Http\Controllers\Api\BusinessRatingController;
+use App\Http\Controllers\Api\CampaignController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\LoyaltyPointController;
+use App\Http\Controllers\Api\MenuCategoryController;
+use App\Http\Controllers\Api\MenuItemController;
 use App\Http\Controllers\Api\UserController;
+use App\Models\BusinessRating;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Http\Request;
@@ -47,6 +53,54 @@ Route::middleware(["log"])->group(function () {
             Route::delete('/{id}', [BusinessController::class, 'destroy']);
             Route::get('/{id}', [BusinessController::class, 'show']);
             Route::get('/', [BusinessController::class, 'index']);
+        });
+
+        Route::prefix('campaigns')->group(function () {
+            Route::post('/', [CampaignController::class, 'create'])->name('campaign.create');
+            Route::put('/{campaignId}', [CampaignController::class, 'update'])->name('campaign.update');
+            Route::delete('/{campaignId}', [CampaignController::class, 'delete'])->name('campaign.delete');
+            
+            // Kullanıcı kampanya katılımı
+            Route::post('/{campaignId}/join/{userId}', [CampaignController::class, 'joinCampaign'])->name('campaign.join');
+            Route::post('/{campaignId}/leave/{userId}', [CampaignController::class, 'leaveCampaign'])->name('campaign.leave');
+            
+            // Kullanıcının kampanya katılım durumu
+            Route::get('/{campaignId}/is-joined/{userId}', [CampaignController::class, 'isUserJoined'])->name('campaign.isJoined');
+        });
+
+        //TODO alt tarafı postmande test et
+
+        Route::prefix('loyalty-points')->group(function () {
+            Route::get('/', [LoyaltyPointController::class, 'index']);
+            Route::get('/{id}', [LoyaltyPointController::class, 'show']);
+            Route::post('/', [LoyaltyPointController::class, 'create']);
+            Route::put('/{id}', [LoyaltyPointController::class, 'update']);
+            Route::delete('/{id}', [LoyaltyPointController::class, 'delete']);
+            Route::get('/user/{userId}', [LoyaltyPointController::class, 'getByUserId']);
+        });
+
+        Route::prefix('business-ratings')->group(function () {
+            Route::post('/', [BusinessRatingController::class, 'store']);
+            Route::put('/{id}', [BusinessRatingController::class, 'update']);
+            Route::delete('/{id}', [BusinessRatingController::class, 'destroy']);
+            Route::get('/business/{businessId}', [BusinessRatingController::class, 'getAllByBusinessId']);
+            Route::get('/business/{businessId}/average', [BusinessRatingController::class, 'getAverageRating']);
+        });
+
+        Route::prefix('businesses/{businessId}/categories')->group(function () {
+            Route::get('/', [MenuCategoryController::class, 'index']);          // Tüm kategorileri listele
+            Route::post('/', [MenuCategoryController::class, 'store']);         // Yeni kategori oluştur
+            Route::get('/{id}', [MenuCategoryController::class, 'show']);       // Belirli bir kategoriyi göster
+            Route::put('/{id}', [MenuCategoryController::class, 'update']);     // Kategoriyi güncelle
+            Route::delete('/{id}', [MenuCategoryController::class, 'destroy']); // Kategoriyi sil
+        });
+
+        Route::prefix('menu-items')->group(function () {
+            Route::get('/', [MenuItemController::class, 'index']); // Tüm menü öğelerini getir
+            Route::get('/{id}', [MenuItemController::class, 'show']); // Belirli bir menü öğesini getir
+            Route::post('/', [MenuItemController::class, 'store']); // Yeni bir menü öğesi ekle
+            Route::put('/{id}', [MenuItemController::class, 'update']); // Belirli bir menü öğesini güncelle
+            Route::delete('/{id}', [MenuItemController::class, 'destroy']); // Belirli bir menü öğesini sil
         });
 
         
