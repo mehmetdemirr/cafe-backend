@@ -7,31 +7,40 @@ use App\Models\MenuItem;
 
 class MenuItemRepository implements MenuItemRepositoryInterface
 {
-    public function create(array $data)
+    public function getAllByBusinessId(int $businessId): array
     {
-        return MenuItem::create($data);
+        return MenuItem::where('business_id', $businessId)->get()->toArray();
     }
 
-    public function update(int $id, array $data)
+    public function findById(int $id): ?array
     {
-        $item = $this->getById($id);
-        $item->update($data);
-        return $item;
+        return MenuItem::find($id)?->toArray();
     }
 
-    public function delete(int $id)
+    public function create(array $data): array
     {
-        $item = $this->getById($id);
-        $item->delete();
+        return MenuItem::create($data)->toArray();
     }
 
-    public function getAllByBusinessId(int $businessId) 
+    public function update(int $id, array $data): bool
     {
-        return MenuItem::where('business_id', $businessId)->get();
+        $item = MenuItem::find($id);
+        if ($item) {
+            return $item->update($data);
+        }
+        return false;
     }
 
-    public function getById(int $id)
+    public function delete(int $id): bool
     {
-        return MenuItem::findOrFail($id);
+        return MenuItem::destroy($id);
+    }
+
+    public function getByCategoryIdAndBusinessId(int $categoryId, int $businessId): array
+    {
+        return MenuItem::where('menu_category_id', $categoryId)
+            ->where('business_id', $businessId)
+            ->get()
+            ->toArray();
     }
 }

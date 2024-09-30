@@ -18,7 +18,7 @@ class BusinessRating extends Model
     ];
 
     // İlişkiler
-    public function cafe()
+    public function business()
     {
         return $this->belongsTo(related: Business::class);
     }

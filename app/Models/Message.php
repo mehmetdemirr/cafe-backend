@@ -14,6 +14,7 @@ class Message extends Model
         'media_path',
         'sender_id',
         'receiver_id',
+        'match_id',
     ];
 
     // İlişkiler
@@ -25,5 +26,10 @@ class Message extends Model
     public function receiver()
     {
         return $this->belongsTo(User::class, 'receiver_id');
+    }
+
+    public function match()
+    {
+        return $this->belongsTo(Matchup::class, 'match_id'); // Match modeli ile ilişki
     }
 }

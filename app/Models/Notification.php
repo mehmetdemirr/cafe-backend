@@ -11,12 +11,13 @@ class Notification extends Model
 
     protected $fillable = [
         'message',
-        'business_id',
+        'user_id', 
+        'category',
     ];
 
     // İlişkiler
-    public function cafe()
+    public function user()
     {
-        return $this->belongsTo(Business::class);
+        return $this->belongsTo(User::class);
     }
 }

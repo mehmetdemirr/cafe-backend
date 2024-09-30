@@ -82,5 +82,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Campaign::class, 'campaign_user')->withTimestamps();
     }
-    
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
 }

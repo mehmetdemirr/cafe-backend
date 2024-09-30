@@ -18,7 +18,7 @@ class Campaign extends Model
     ];
 
     // İlişkiler
-    public function cafe()
+    public function business()
     {
         return $this->belongsTo(Business::class);
     }

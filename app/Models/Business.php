@@ -37,11 +37,6 @@ class Business extends Model
         return $this->hasMany(Event::class);
     }
 
-    public function notifications()
-    {
-        return $this->hasMany(Notification::class);
-    }
-
     public function ratings()
     {
         return $this->hasMany(BusinessRating::class);
@@ -50,6 +45,12 @@ class Business extends Model
     public function favoriteByUsers()
     {
         return $this->belongsToMany(User::class, 'user_favorite_businesses');
+    }
+
+    // Değerlendirme sayısını almak için
+    public function ratingCount()
+    {
+        return $this->ratings()->count(); // Değerlendirme sayısını döndürür
     }
 
 }

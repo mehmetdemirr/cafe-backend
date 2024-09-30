@@ -7,13 +7,19 @@ use App\Interfaces\BusinessRepositoryInterface;
 use App\Interfaces\CampaignInterface;
 use App\Interfaces\CategoryRepositoryInterface;
 use App\Interfaces\LoyaltyPointRepositoryInterface;
+use App\Interfaces\MatchRepositoryInterface;
 use App\Interfaces\MenuCategoryRepositoryInterface;
+use App\Interfaces\MenuItemRepositoryInterface;
+use App\Interfaces\NotificationRepositoryInterface;
 use App\Repositories\BusinessRatingRepository;
 use App\Repositories\BusinessRepository;
 use App\Repositories\CampaignRepository;
 use App\Repositories\CategoryRepository;
 use App\Repositories\LoyaltyPointRepository;
+use App\Repositories\MatchRepository;
 use App\Repositories\MenuCategoryRepository;
+use App\Repositories\MenuItemRepository;
+use App\Repositories\NotificationRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -30,6 +36,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(LoyaltyPointRepositoryInterface::class, LoyaltyPointRepository::class);
         $this->app->bind(BusinessRatingRepositoryInterface::class, BusinessRatingRepository::class);
         $this->app->bind(MenuCategoryRepositoryInterface::class, MenuCategoryRepository::class);
+        $this->app->bind(MenuItemRepositoryInterface::class, MenuItemRepository::class);
+        $this->app->bind(NotificationRepositoryInterface::class, NotificationRepository::class);
+        $this->app->bind(MatchRepositoryInterface::class, MatchRepository::class);
     }
 
     /**

@@ -21,7 +21,6 @@ class MenuItemRequest extends BaseRequest
             'price' => 'required|numeric',
             'description' => 'nullable|string',
             'menu_category_id' => 'required|exists:menu_categories,id',
-            'business_id' => 'required|exists:businesses,id',
             'views' => 'nullable|integer',
             'is_available' => 'nullable|boolean',
             'additional_info' => 'nullable|string',
@@ -35,9 +34,7 @@ class MenuItemRequest extends BaseRequest
             'name.required' => 'Menu item name is required.',
             'price.required' => 'Price is required.',
             'menu_category_id.required' => 'Menu category ID is required.',
-            'business_id.required' => 'Business ID is required.',
             'menu_category_id.exists' => 'The selected menu category does not exist.',
-            'business_id.exists' => 'The selected business does not exist.',
         ];
     }
 }

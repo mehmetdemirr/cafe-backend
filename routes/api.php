@@ -8,8 +8,10 @@ use App\Http\Controllers\Api\BusinessRatingController;
 use App\Http\Controllers\Api\CampaignController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\LoyaltyPointController;
+use App\Http\Controllers\Api\MatchController;
 use App\Http\Controllers\Api\MenuCategoryController;
 use App\Http\Controllers\Api\MenuItemController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\UserController;
 use App\Models\BusinessRating;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -57,16 +59,16 @@ Route::middleware(["log"])->group(function () {
         });
 
         Route::prefix('campaigns')->group(function () {
-            Route::post('/', [CampaignController::class, 'create'])->name('campaign.create');
-            Route::put('/{campaignId}', [CampaignController::class, 'update'])->name('campaign.update');
-            Route::delete('/{campaignId}', [CampaignController::class, 'delete'])->name('campaign.delete');
+            Route::post('/', [CampaignController::class, 'create']);
+            Route::put('/{campaignId}', [CampaignController::class, 'update']);
+            Route::delete('/{campaignId}', [CampaignController::class, 'delete']);
             
             // Kullanıcı kampanya katılımı
-            Route::post('/{campaignId}/join/{userId}', [CampaignController::class, 'joinCampaign'])->name('campaign.join');
-            Route::post('/{campaignId}/leave/{userId}', [CampaignController::class, 'leaveCampaign'])->name('campaign.leave');
+            Route::post('/{campaignId}/join/{userId}', [CampaignController::class, 'joinCampaign']);
+            Route::post('/{campaignId}/leave/{userId}', [CampaignController::class, 'leaveCampaign']);
             
             // Kullanıcının kampanya katılım durumu
-            Route::get('/{campaignId}/is-joined/{userId}', [CampaignController::class, 'isUserJoined'])->name('campaign.isJoined');
+            Route::get('/{campaignId}/is-joined/{userId}', [CampaignController::class, 'isUserJoined']);
         });
 
         Route::prefix('loyalty-points')->group(function () {
@@ -85,8 +87,6 @@ Route::middleware(["log"])->group(function () {
             Route::get('/business/{businessId}/average', [BusinessRatingController::class, 'getAverageRating']);
         });
 
-        // postman
-
         Route::prefix('menu-categories')->group(function () {
             Route::get('/business/{businessId}', [MenuCategoryController::class, 'getCategoriesForCustomer']);
             Route::get('/', [MenuCategoryController::class, 'index']);
@@ -95,17 +95,27 @@ Route::middleware(["log"])->group(function () {
             Route::delete('/{id}', [MenuCategoryController::class, 'destroy']);
             Route::get('/{id}', [MenuCategoryController::class, 'show']);
         });
-        
 
         Route::prefix('menu-items')->group(function () {
             Route::get('/', [MenuItemController::class, 'index']); 
-            Route::get('/{id}', [MenuItemController::class, 'show']); 
+            Route::get('/category/{categoryId}', [MenuItemController::class, 'getByCategoryId']); // Kategori ID'sine göre menü öğelerini getir
             Route::post('/', [MenuItemController::class, 'store']);
-            Route::put('/{id}', [MenuItemController::class, 'update']); 
+            Route::get('/{id}', [MenuItemController::class, 'show']);
+            Route::put('/{id}', [MenuItemController::class, 'update']);
             Route::delete('/{id}', [MenuItemController::class, 'destroy']);
+        });   
+        
+        Route::prefix('notifications')->middleware('auth:sanctum')->group(function () {
+            Route::get('/', [NotificationController::class, 'index'])->name('notifications.index');
+            Route::delete('/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy'); 
         });
 
-        
+        //postman //TODO 
+        Route::prefix('matches')->group(function () {
+            Route::post('/swipe-right', [MatchController::class, 'swipeRight']);
+            Route::get('/getMatches', [MatchController::class, 'getMatches']);
+            Route::post('/swipe-left', [MatchController::class, 'dismissUser']);
+        });
         
         // //admin route
         // Route::middleware(["role:admin"])->group(function () {

@@ -6,18 +6,17 @@ use App\Models\Business;
 use App\Models\BusinessRating;
 use App\Models\User;
 use App\Models\UserFavoriteBusiness;
-use App\Models\CafeRating;
 
 class BusinessRepository implements BusinessRepositoryInterface
 {
     public function all(): array
     {
-        return Business::with(['owner', 'menuCategories', 'campaigns', 'events', 'notifications', 'ratings'])->get()->toArray();
+        return Business::with(['owner', 'menuCategories', 'campaigns', 'events', 'ratings'])->get()->toArray();
     }
 
     public function find(int $id): ?Business
     {
-        return Business::with(['owner', 'menuCategories', 'campaigns', 'events', 'notifications', 'ratings'])->find($id);
+        return Business::with(['owner', 'menuCategories', 'campaigns', 'events', 'ratings'])->find($id);
     }
 
     public function create(array $data): Business
@@ -78,10 +77,22 @@ class BusinessRepository implements BusinessRepositoryInterface
 
     public function getFavoriteBusinesses(int $userId): array
     {
-        return UserFavoriteBusiness::with('business')
+        return UserFavoriteBusiness::with(['business' => function($query) {
+                $query->withCount('ratings'); // Değerlendirme sayısını al
+            }])
             ->where('user_id', $userId)
             ->get()
             ->pluck('business')
+            ->map(function ($business) {
+                // İşletme bilgilerini ve değerlendirme sayısını döndür
+                return [
+                    'id' => $business->id,
+                    'name' => $business->name,
+                    'address' => $business->address,
+                    'qr_code' => $business->qr_code,
+                    'ratings_count' => $business->ratings_count, // Değerlendirme sayısı
+                ];
+            })
             ->toArray();
     }
 
