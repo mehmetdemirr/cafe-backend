@@ -3,77 +3,99 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\BusinessRatingRequest;
-use Illuminate\Http\Request;
 use App\Http\Requests\LoyaltyPointRequest;
-use App\Interfaces\BusinessRatingRepositoryInterface;
+use App\Http\Requests\UpdateLoyaltyPointRequest;
+use App\Interfaces\LoyaltyPointRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 
 class LoyaltyPointController extends Controller
 {
-    protected $businessRatingRepository;
+    protected $loyaltyPointRepository;
 
-    public function __construct(BusinessRatingRepositoryInterface $businessRatingRepository)
+    public function __construct(LoyaltyPointRepositoryInterface $loyaltyPointRepository)
     {
-        $this->businessRatingRepository = $businessRatingRepository;
+        $this->loyaltyPointRepository = $loyaltyPointRepository;
     }
 
-    public function store(BusinessRatingRequest $request): JsonResponse
+    // Index method to get all loyalty points
+    public function index(): JsonResponse
     {
-        $rating = $this->businessRatingRepository->create($request->validated());
+        $loyaltyPoints = $this->loyaltyPointRepository->all();
         
         return response()->json([
             'success' => true,
-            'message' => 'Rating created successfully.',
-            'data' => $rating,
+            'message' => 'Loyalty points retrieved successfully.',
+            'data' => $loyaltyPoints,
+            'errors' => null,
+        ]);
+    }
+
+    // Store new loyalty point
+    public function store(LoyaltyPointRequest $request): JsonResponse
+    {
+        $loyaltyPoint = $this->loyaltyPointRepository->create($request->validated());
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Loyalty point created successfully.',
+            'data' => $loyaltyPoint,
             'errors' => null,
         ], 201);
     }
 
-    public function update(BusinessRatingRequest $request, $id): JsonResponse
+    // Update existing loyalty point
+    public function update(UpdateLoyaltyPointRequest $request, $id): JsonResponse
     {
-        $rating = $this->businessRatingRepository->update($id, $request->validated());
+        $isUpdated = $this->loyaltyPointRepository->update($id, $request->validated());
+        
+        if ($isUpdated) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Loyalty point updated successfully.',
+                'data' => $isUpdated,
+                'errors' => null,
+            ]);
+        }
         
         return response()->json([
-            'success' => true,
-            'message' => 'Rating updated successfully.',
-            'data' => $rating,
-            'errors' => null,
-        ]);
+            'success' => false,
+            'message' => 'Loyalty point not found or not updated.',
+            'data' => null,
+            'errors' => 'Loyalty point could not be updated.',
+        ], 404);
     }
 
+    // Delete loyalty point
     public function destroy($id): JsonResponse
     {
-        $this->businessRatingRepository->delete($id);
+        $isDeleted = $this->loyaltyPointRepository->delete($id);
+        
+        if ($isDeleted) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Loyalty point deleted successfully.',
+                'data' => null,
+                'errors' => null,
+            ], 200);
+        }
         
         return response()->json([
-            'success' => true,
-            'message' => 'Rating deleted successfully.',
+            'success' => false,
+            'message' => 'Loyalty point not found.',
             'data' => null,
-            'errors' => null,
-        ], 204);
+            'errors' => 'Loyalty point could not be deleted.',
+        ], 404);
     }
 
-    public function getAllByBusinessId($businessId): JsonResponse
+    // Get loyalty points by user ID
+    public function findByUserId($userId): JsonResponse
     {
-        $ratings = $this->businessRatingRepository->getAllByBusinessId($businessId);
+        $loyaltyPoints = $this->loyaltyPointRepository->findByUserId($userId);
         
         return response()->json([
             'success' => true,
-            'message' => 'Ratings retrieved successfully.',
-            'data' => $ratings,
-            'errors' => null,
-        ]);
-    }
-
-    public function getAverageRating($businessId): JsonResponse
-    {
-        $average = $this->businessRatingRepository->getAverageRating($businessId);
-        
-        return response()->json([
-            'success' => true,
-            'message' => 'Average rating retrieved successfully.',
-            'data' => ['average_rating' => $average],
+            'message' => 'Loyalty points retrieved for user.',
+            'data' => $loyaltyPoints,
             'errors' => null,
         ]);
     }

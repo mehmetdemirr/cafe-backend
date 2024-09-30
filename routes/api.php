@@ -34,6 +34,7 @@ Route::middleware(["log"])->group(function () {
             Route::put('/{id}', [CategoryController::class, 'update']); 
             Route::delete('/{id}', [CategoryController::class, 'destroy']); 
         });
+
         Route::group(['prefix' => 'user/favorite-categories'], function () {
             Route::get('/', [CategoryController::class, 'userFavorites']); 
             Route::post('/{categoryId}', [CategoryController::class, 'addToFavorites']); 
@@ -68,15 +69,12 @@ Route::middleware(["log"])->group(function () {
             Route::get('/{campaignId}/is-joined/{userId}', [CampaignController::class, 'isUserJoined'])->name('campaign.isJoined');
         });
 
-        //TODO alt tarafı postmande test et
-
         Route::prefix('loyalty-points')->group(function () {
-            Route::get('/', [LoyaltyPointController::class, 'index']);
-            Route::get('/{id}', [LoyaltyPointController::class, 'show']);
-            Route::post('/', [LoyaltyPointController::class, 'create']);
+            Route::get('/', [LoyaltyPointController::class, 'index']); 
+            Route::get('/user/{userId}', [LoyaltyPointController::class, 'findByUserId']); // Kullanıcı ID'sine göre loyalty points
+            Route::post('/', [LoyaltyPointController::class, 'store']);
             Route::put('/{id}', [LoyaltyPointController::class, 'update']);
-            Route::delete('/{id}', [LoyaltyPointController::class, 'delete']);
-            Route::get('/user/{userId}', [LoyaltyPointController::class, 'getByUserId']);
+            Route::delete('/{id}', [LoyaltyPointController::class, 'destroy']); 
         });
 
         Route::prefix('business-ratings')->group(function () {
@@ -87,20 +85,24 @@ Route::middleware(["log"])->group(function () {
             Route::get('/business/{businessId}/average', [BusinessRatingController::class, 'getAverageRating']);
         });
 
-        Route::prefix('businesses/{businessId}/categories')->group(function () {
-            Route::get('/', [MenuCategoryController::class, 'index']);          // Tüm kategorileri listele
-            Route::post('/', [MenuCategoryController::class, 'store']);         // Yeni kategori oluştur
-            Route::get('/{id}', [MenuCategoryController::class, 'show']);       // Belirli bir kategoriyi göster
-            Route::put('/{id}', [MenuCategoryController::class, 'update']);     // Kategoriyi güncelle
-            Route::delete('/{id}', [MenuCategoryController::class, 'destroy']); // Kategoriyi sil
+        // postman
+
+        Route::prefix('menu-categories')->group(function () {
+            Route::get('/business/{businessId}', [MenuCategoryController::class, 'getCategoriesForCustomer']);
+            Route::get('/', [MenuCategoryController::class, 'index']);
+            Route::post('/', [MenuCategoryController::class, 'store']);
+            Route::put('/{id}', [MenuCategoryController::class, 'update']);
+            Route::delete('/{id}', [MenuCategoryController::class, 'destroy']);
+            Route::get('/{id}', [MenuCategoryController::class, 'show']);
         });
+        
 
         Route::prefix('menu-items')->group(function () {
-            Route::get('/', [MenuItemController::class, 'index']); // Tüm menü öğelerini getir
-            Route::get('/{id}', [MenuItemController::class, 'show']); // Belirli bir menü öğesini getir
-            Route::post('/', [MenuItemController::class, 'store']); // Yeni bir menü öğesi ekle
-            Route::put('/{id}', [MenuItemController::class, 'update']); // Belirli bir menü öğesini güncelle
-            Route::delete('/{id}', [MenuItemController::class, 'destroy']); // Belirli bir menü öğesini sil
+            Route::get('/', [MenuItemController::class, 'index']); 
+            Route::get('/{id}', [MenuItemController::class, 'show']); 
+            Route::post('/', [MenuItemController::class, 'store']);
+            Route::put('/{id}', [MenuItemController::class, 'update']); 
+            Route::delete('/{id}', [MenuItemController::class, 'destroy']);
         });
 
         

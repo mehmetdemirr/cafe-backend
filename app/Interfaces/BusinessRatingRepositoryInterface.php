@@ -12,4 +12,5 @@ interface BusinessRatingRepositoryInterface
     public function getAllByBusinessId($businessId);
     public function getAverageRating($businessId);
     public function exists($userId, $businessId);
+    public function find($id);
 }

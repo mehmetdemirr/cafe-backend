@@ -24,7 +24,8 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(BusinessRepositoryInterface::class, BusinessRepository::class);
-        $this->app->bind(CategoryRepositoryInterface::class, concrete: CategoryRepository::class);
+        $this->app->bind(BusinessRatingRepositoryInterface::class, BusinessRatingRepository::class);
+        $this->app->bind(CategoryRepositoryInterface::class, CategoryRepository::class);
         $this->app->bind(CampaignInterface::class, CampaignRepository::class);
         $this->app->bind(LoyaltyPointRepositoryInterface::class, LoyaltyPointRepository::class);
         $this->app->bind(BusinessRatingRepositoryInterface::class, BusinessRatingRepository::class);

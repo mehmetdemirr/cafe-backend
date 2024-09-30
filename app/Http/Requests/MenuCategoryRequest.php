@@ -18,7 +18,6 @@ class MenuCategoryRequest extends BaseRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'business_id' => 'required|exists:businesses,id',
         ];
     }
 
@@ -26,8 +25,6 @@ class MenuCategoryRequest extends BaseRequest
     {
         return [
             'name.required' => 'Kategori adı gereklidir.',
-            'business_id.required' => 'İşletme ID gereklidir.',
-            'business_id.exists' => 'İşletme bulunamadı.',
         ];
     }
 }

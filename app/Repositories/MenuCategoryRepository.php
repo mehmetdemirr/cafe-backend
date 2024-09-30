@@ -9,33 +9,41 @@ use App\Models\MenuCategory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Database\Eloquent\Collection;
 
-class MenuCategoryRepository
+class MenuCategoryRepository implements MenuCategoryRepositoryInterface
 {
-    public function create(array $data): MenuCategory
+    public function getAllByBusinessId(int $businessId): array
     {
-        return MenuCategory::create($data);
+        return MenuCategory::where('business_id', $businessId)->get()->toArray();
     }
 
-    public function update(int $id, array $data): MenuCategory
+    public function findById(int $id): ?array
     {
-        $category = $this->findById($id);
-        $category->update($data);
-        return $category;
+        return MenuCategory::find($id)?->toArray();
     }
 
-    public function delete(int $id): void
+    public function create(array $data): array
     {
-        $category = $this->findById($id);
-        $category->delete();
+        return MenuCategory::create($data)->toArray();
     }
 
-    public function getAllByBusinessId(int $businessId): Collection
+    public function update(int $id, array $data): bool
     {
-        return MenuCategory::where('business_id', $businessId)->get();
+        $category = MenuCategory::find($id);
+        if ($category) {
+            return $category->update($data);
+        }
+        return false;
     }
 
-    public function findById(int $id): ?MenuCategory
+    public function delete(int $id): bool
     {
-        return MenuCategory::find($id);
+        return MenuCategory::destroy($id);
+    }
+
+    public function getCategoriesForCustomerByBusinessId(int $businessId): array
+    {
+        // This method will retrieve categories for customers (read-only)
+        return MenuCategory::where('business_id', $businessId)
+            ->get()->toArray();
     }
 }

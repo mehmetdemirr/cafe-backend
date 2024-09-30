@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\BusinessRatingRequest;
+use App\Http\Requests\UpdateBusinessRatingRequest;
 use App\Interfaces\BusinessRatingRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 
@@ -24,7 +25,8 @@ class BusinessRatingController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Bu işyeri için zaten bir değerlendirme yaptınız.',
-                'errors' => null
+                'errors' => null,
+                'data' =>null,
             ], 400); 
         }
 
@@ -42,15 +44,28 @@ class BusinessRatingController extends Controller
     /**
      * Belirli bir değerlendirmeyi güncelle.
      */
-    public function update(BusinessRatingRequest $request, $id): JsonResponse
+    public function update(UpdateBusinessRatingRequest $request, $id): JsonResponse
     {
-        $rating = $this->businessRatingRepository->update($id, $request->validated());
-        
+        // Önce modelin var olup olmadığını kontrol et
+        $rating = $this->businessRatingRepository->find($id);
+    
+        if (!$rating) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Güncellenecek değerlendirme bulunamadı.',
+                'errors' => 'Bu ID ile bir değerlendirme mevcut değil.',
+                'data' => null,
+            ], 404);
+        }
+    
+        // Güncelleme işlemi
+        $updatedRating = $this->businessRatingRepository->update($id, $request->validated());
+    
         return response()->json([
             'success' => true,
-            'data' => $rating,
+            'data' => $updatedRating,
             'message' => 'Değerlendirme başarıyla güncellendi.',
-           'errors' => null
+            'errors' => null
         ]);
     }
 
@@ -59,13 +74,23 @@ class BusinessRatingController extends Controller
      */
     public function destroy($id): JsonResponse
     {
-        $this->businessRatingRepository->delete($id);
-        
-        return response()->json([
-            'success' => true,
-            'message' => 'Değerlendirme başarıyla silindi.',
-            'errors' => null
-        ], 204);
+        $deleted = $this->businessRatingRepository->delete($id);
+
+        if ($deleted) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Değerlendirme başarıyla silindi.',
+                'errors' => null,
+                'data' => null,
+            ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Değerlendirme bulunamadı.',
+                'errors' => 'Silinecek değerlendirme mevcut değil.',
+                'data' => null,
+            ], 404);
+        }
     }
 
     /**

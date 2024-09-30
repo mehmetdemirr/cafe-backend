@@ -39,4 +39,9 @@ class BusinessRatingRepository implements BusinessRatingRepositoryInterface
             ->where('business_id', $businessId)
             ->exists();
     }
+
+    public function find($id)
+    {
+        return BusinessRating::find($id);
+    }
 }

@@ -49,12 +49,11 @@ class User extends Authenticatable
     }
 
     // İlişkiler
-    public function cafes()
+    public function business()
     {
-        return $this->hasMany(Business::class);
+        return $this->hasOne(Business::class);
     }
-
-    public function favoriteCafes()
+    public function favoriteBusinesses()
     {
         return $this->belongsToMany(Business::class, 'user_favorite_cafes');
     }

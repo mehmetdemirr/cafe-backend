@@ -68,7 +68,7 @@ class BusinessController extends Controller
         ], 404);
     }
 
-    public function destroy($id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
         $deleted = $this->businessRepository->delete($id);
         if ($deleted) {
@@ -87,7 +87,7 @@ class BusinessController extends Controller
         ], 404);
     }
 
-    public function show($id): JsonResponse
+    public function show(int $id): JsonResponse
     {
         $business = $this->businessRepository->find($id);
         if ($business) {
