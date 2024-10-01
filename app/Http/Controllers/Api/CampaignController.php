@@ -87,4 +87,16 @@ class CampaignController extends Controller
             'errors' => null,
         ]);
     }
+
+    public function getActiveCampaigns(int $businessId): JsonResponse
+    {
+        $campaigns = $this->campaignRepository->getActiveCampaignsByBusinessId($businessId);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Active campaigns retrieved successfully.',
+            'data' => $campaigns,
+            'errors' => null,
+        ]);
+    }
 }

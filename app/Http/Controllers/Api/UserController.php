@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Services\LogService;
 use Illuminate\Http\Request;
@@ -50,6 +51,32 @@ class UserController extends Controller
             'data' => $user,
             'message' => 'Kullanıcı bilgileri güncellendi.',
             'errors' => null,
+        ], 200);
+    }
+
+    public function changePassword(ChangePasswordRequest $request)
+    {
+        $user = $request->user();
+
+        // Mevcut parolayı kontrol et
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Mevcut parola hatalı.',
+                'errors' => null,
+                'data' =>false,
+            ], 400);
+        }
+
+        // Yeni parolayı hash'le ve kaydet
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Parola başarıyla değiştirildi.',
+            'errors' => null,
+            'data' =>true,
         ], 200);
     }
 }

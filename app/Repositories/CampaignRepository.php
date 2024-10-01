@@ -86,4 +86,12 @@ class CampaignRepository implements CampaignInterface
         $currentDate = Carbon::now();
         return $currentDate->between($campaign->start_date, $campaign->end_date);
     }
+
+    public function getActiveCampaignsByBusinessId(int $businessId): array
+    {
+        return Campaign::where('business_id', $businessId)
+                    ->where('end_date', '>', Carbon::now())
+                    ->get()
+                    ->toArray();
+    }
 }

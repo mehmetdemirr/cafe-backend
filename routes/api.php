@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\MatchController;
 use App\Http\Controllers\Api\MenuCategoryController;
 use App\Http\Controllers\Api\MenuItemController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\SupportMessageController;
 use App\Http\Controllers\Api\UserController;
 use App\Models\BusinessRating;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -28,6 +29,7 @@ Route::middleware(["log"])->group(function () {
         Route::post('auth/logout', [AuthController::class, 'logout']);
         Route::get('user', [UserController::class, 'user']);
         Route::put('user/update', [UserController::class, 'update']);
+        Route::put('/user/change-password', [UserController::class, 'changePassword']);
 
         Route::group(['prefix' => 'categories'], function () {
             Route::get('/', [CategoryController::class, 'index']); 
@@ -58,7 +60,7 @@ Route::middleware(["log"])->group(function () {
             Route::get('/', [BusinessController::class, 'index']);
         });
 
-        Route::prefix('campaigns')->group(function () {
+        Route::prefix(prefix: 'campaigns')->group(function () {
             Route::post('/', [CampaignController::class, 'create']);
             Route::put('/{campaignId}', [CampaignController::class, 'update']);
             Route::delete('/{campaignId}', [CampaignController::class, 'delete']);
@@ -99,6 +101,7 @@ Route::middleware(["log"])->group(function () {
         Route::prefix('menu-items')->group(function () {
             Route::get('/', [MenuItemController::class, 'index']); 
             Route::get('/category/{categoryId}', [MenuItemController::class, 'getByCategoryId']); // Kategori ID'sine göre menü öğelerini getir
+            Route::get( '/user/{businessId}/category/{categoryId}', [MenuItemController::class, 'getByCategoryForUser']);
             Route::post('/', [MenuItemController::class, 'store']);
             Route::get('/{id}', [MenuItemController::class, 'show']);
             Route::put('/{id}', [MenuItemController::class, 'update']);
@@ -110,11 +113,26 @@ Route::middleware(["log"])->group(function () {
             Route::delete('/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy'); 
         });
 
+        Route::prefix('support-messages')->group(function () {
+            Route::post('/', [SupportMessageController::class, 'store']);
+            // Route::delete('/{id}', [SupportMessageController::class, 'destroy']);
+        });
+
         //postman //TODO 
         Route::prefix('matches')->group(function () {
             Route::post('/swipe-right', [MatchController::class, 'swipeRight']);
             Route::get('/getMatches', [MatchController::class, 'getMatches']);
             Route::post('/swipe-left', [MatchController::class, 'dismissUser']);
+        });
+
+        Route::prefix('campaigns')->group(function () {
+            Route::post('/', [CampaignController::class, 'create']);
+            Route::put('/{campaignId}', [CampaignController::class, 'update']);
+            Route::delete('/{campaignId}', [CampaignController::class, 'delete']);
+            Route::post('/{campaignId}/join/{userId}', [CampaignController::class, 'joinCampaign']);
+            Route::post('/{campaignId}/leave/{userId}', [CampaignController::class, 'leaveCampaign']);
+            Route::get('/{campaignId}/is-joined/{userId}', [CampaignController::class, 'isUserJoined']);
+            Route::get('/active/{businessId}', [CampaignController::class, 'getActiveCampaigns']);
         });
         
         // //admin route

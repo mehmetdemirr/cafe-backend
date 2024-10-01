@@ -16,4 +16,5 @@ interface CampaignInterface
     public function getUserCampaigns(int $userId): array;
     public function getActiveCampaigns(): array;
     public function endExpiredCampaigns(): void;
+    public function getActiveCampaignsByBusinessId(int $businessId): array;
 }

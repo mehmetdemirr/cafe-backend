@@ -45,6 +45,20 @@ class MenuItemController extends Controller
         ]);
     }
 
+        // Retrieve menu items by category ID for a user
+    public function getByCategoryForUser(int $businessId, int $categoryId): JsonResponse
+    {
+        // İşletme ve kategoriye göre menü öğelerini getir
+        $items = $this->menuItemRepository->getByCategoryIdAndBusinessId($categoryId, $businessId);
+
+        return response()->json([
+            'data' => $items,
+            'success' => true,
+            'message' => 'Kategoriye ait menü öğeleri başarıyla alındı.',
+            'errors' => null,
+        ]);
+    }
+
     // Create a new menu item
     public function store(MenuItemRequest $request): JsonResponse
     {

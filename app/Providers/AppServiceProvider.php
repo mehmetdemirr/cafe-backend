@@ -11,6 +11,7 @@ use App\Interfaces\MatchRepositoryInterface;
 use App\Interfaces\MenuCategoryRepositoryInterface;
 use App\Interfaces\MenuItemRepositoryInterface;
 use App\Interfaces\NotificationRepositoryInterface;
+use App\Interfaces\SupportMessageRepositoryInterface;
 use App\Repositories\BusinessRatingRepository;
 use App\Repositories\BusinessRepository;
 use App\Repositories\CampaignRepository;
@@ -20,6 +21,7 @@ use App\Repositories\MatchRepository;
 use App\Repositories\MenuCategoryRepository;
 use App\Repositories\MenuItemRepository;
 use App\Repositories\NotificationRepository;
+use App\Repositories\SupportMessageRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -39,6 +41,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(MenuItemRepositoryInterface::class, MenuItemRepository::class);
         $this->app->bind(NotificationRepositoryInterface::class, NotificationRepository::class);
         $this->app->bind(MatchRepositoryInterface::class, MatchRepository::class);
+        $this->app->bind(SupportMessageRepositoryInterface::class, SupportMessageRepository::class);
     }
 
     /**
