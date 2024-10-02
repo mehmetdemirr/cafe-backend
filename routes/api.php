@@ -29,7 +29,7 @@ Route::middleware(["log"])->group(function () {
         Route::post('auth/logout', [AuthController::class, 'logout']);
         Route::get('user', [UserController::class, 'user']);
         Route::put('user/update', [UserController::class, 'update']);
-        Route::put('/user/change-password', [UserController::class, 'changePassword']);
+        Route::put('user/change-password', [UserController::class, 'changePassword']);
 
         Route::group(['prefix' => 'categories'], function () {
             Route::get('/', [CategoryController::class, 'index']); 
@@ -118,13 +118,6 @@ Route::middleware(["log"])->group(function () {
             // Route::delete('/{id}', [SupportMessageController::class, 'destroy']);
         });
 
-        //postman //TODO 
-        Route::prefix('matches')->group(function () {
-            Route::post('/swipe-right', [MatchController::class, 'swipeRight']);
-            Route::get('/getMatches', [MatchController::class, 'getMatches']);
-            Route::post('/swipe-left', [MatchController::class, 'dismissUser']);
-        });
-
         Route::prefix('campaigns')->group(function () {
             Route::post('/', [CampaignController::class, 'create']);
             Route::put('/{campaignId}', [CampaignController::class, 'update']);
@@ -133,6 +126,16 @@ Route::middleware(["log"])->group(function () {
             Route::post('/{campaignId}/leave/{userId}', [CampaignController::class, 'leaveCampaign']);
             Route::get('/{campaignId}/is-joined/{userId}', [CampaignController::class, 'isUserJoined']);
             Route::get('/active/{businessId}', [CampaignController::class, 'getActiveCampaigns']);
+        });
+
+        //postman //TODO 
+        Route::prefix('matches')->group(function () {
+            Route::get('/getMatches', [MatchController::class, 'getMatches']);
+            Route::get('/potential-matches', [MatchController::class, 'getPotentialMatches']);
+            Route::post('/swipe-right', [MatchController::class, 'swipeRight']);
+            Route::post('/swipe-left', [MatchController::class, 'dismissUser']);
+            Route::get('/swiped-users/right', [MatchController::class, 'getRightSwipedUsers']);
+            Route::get('/swiped-users/left', [MatchController::class, 'getLeftSwipedUsers']);
         });
         
         // //admin route
@@ -148,8 +151,8 @@ Route::middleware(["log"])->group(function () {
            
         // }); 
     });
-    
-    Route::middleware(["throttle:30,1"])->group(function () {
+
+    Route::middleware(["throttle:3,1"])->group(function () {
         Route::post('auth/login', [AuthController::class, 'login']);
         Route::post('auth/register', [AuthController::class, 'register']);
     

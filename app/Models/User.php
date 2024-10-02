@@ -55,7 +55,7 @@ class User extends Authenticatable
     }
     public function favoriteBusinesses()
     {
-        return $this->belongsToMany(Business::class, 'user_favorite_cafes');
+        return $this->belongsToMany(Business::class, 'user_favorite_businesses');
     }
 
     public function messages()
@@ -86,5 +86,10 @@ class User extends Authenticatable
     public function notifications()
     {
         return $this->hasMany(Notification::class);
+    }
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'user_favorite_categories');
     }
 }

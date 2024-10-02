@@ -25,27 +25,27 @@ class DatabaseSeeder extends Seeder
         ]);
         $user->assignRole(UserRoleEnum::USER);
 
-        $business = User::factory()->create([
+        $business_user = User::factory()->create([
             'name' => 'Business Kullanıcısı',
             'email' => 'business@gmail.com',
         ]);
 
         //burda işletme ise orda da kayıt edilecek
         Business::create([
-            "user_id" => $business->id,
+            "user_id" => $business_user->id,
         ]);
-        $business->assignRole(UserRoleEnum::BUSINESS);
+        $business_user->assignRole(UserRoleEnum::BUSINESS);
 
         //admin
-        $admin = User::factory()->create([
+        $admin_user = User::factory()->create([
             'name' => 'Admin Kullanıcısı',
             'email' => 'admin@gmail.com',
         ]);
-        $admin->assignRole(UserRoleEnum::ADMIN);
+        $admin_user->assignRole(UserRoleEnum::ADMIN);
 
         $this->call(class: [
             UserSeeder::class, //user ekle
-            BusinessSeeder::class , //business ekle
+            // BusinessSeeder::class , //business ekle //TODO arada user rolünü business yapıyor gerek yok zaten
             CategorySeeder::class, //genel kategori ekle
             CampaignSeeder::class , // kampanya ekle
             LoyaltyPointSeeder::class ,//sadakat puanı ekle

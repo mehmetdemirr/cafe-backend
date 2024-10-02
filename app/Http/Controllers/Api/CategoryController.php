@@ -54,8 +54,19 @@ class CategoryController extends Controller
     // Yeni kategori ekle
     public function store(StoreCategoryRequest $request): JsonResponse
     {
-        $category = $this->categoryRepository->create($request->validated());
-    
+        // Yüklenen resmin yolunu al
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('favorite', 'public');
+        }
+
+        // Kategori verilerini oluştur
+        $categoryData = $request->validated();
+        $categoryData['image_url'] = $imagePath; // Resim yolunu ekleyin
+
+        // Kategori oluşturma
+        $category = $this->categoryRepository->create($categoryData);
+        
         return response()->json([
             'success' => true,
             'data' => $category,
