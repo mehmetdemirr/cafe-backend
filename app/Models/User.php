@@ -22,7 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'profile_picture', 
+        'is_suspended',
     ];
 
     /**
@@ -49,6 +49,10 @@ class User extends Authenticatable
     }
 
     // İlişkiler
+    public function profileDetail()
+{
+    return $this->hasOne(ProfileDetail::class);
+}
     public function business()
     {
         return $this->hasOne(Business::class);

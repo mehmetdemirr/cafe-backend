@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\BusinessController;
 use App\Http\Controllers\Api\BusinessRatingController;
 use App\Http\Controllers\Api\CampaignController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\ComplaintController;
 use App\Http\Controllers\Api\LoyaltyPointController;
 use App\Http\Controllers\Api\MatchController;
 use App\Http\Controllers\Api\MenuCategoryController;
@@ -30,6 +31,8 @@ Route::middleware(["log"])->group(function () {
         Route::get('user', [UserController::class, 'user']);
         Route::put('user/update', [UserController::class, 'update']);
         Route::put('user/change-password', [UserController::class, 'changePassword']);
+        Route::get('/user/profile', [UserController::class, 'getProfile']);
+        Route::post('/user/profile', [UserController::class, 'updateProfile']);
 
         Route::group(['prefix' => 'categories'], function () {
             Route::get('/', [CategoryController::class, 'index']); 
@@ -128,7 +131,8 @@ Route::middleware(["log"])->group(function () {
             Route::get('/active/{businessId}', [CampaignController::class, 'getActiveCampaigns']);
         });
 
-        //postman //TODO 
+        Route::post('/complaint/report', [ComplaintController::class, 'reportUser']);
+
         Route::prefix('matches')->group(function () {
             Route::get('/getMatches', [MatchController::class, 'getMatches']);
             Route::get('/potential-matches', [MatchController::class, 'getPotentialMatches']);
@@ -152,7 +156,7 @@ Route::middleware(["log"])->group(function () {
         // }); 
     });
 
-    Route::middleware(["throttle:3,1"])->group(function () {
+    Route::middleware(["throttle:30,1"])->group(function () {
         Route::post('auth/login', [AuthController::class, 'login']);
         Route::post('auth/register', [AuthController::class, 'register']);
     

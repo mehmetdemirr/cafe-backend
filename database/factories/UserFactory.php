@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\enum\UserRoleEnum;
+use App\Models\ProfileDetail;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -41,6 +42,18 @@ class UserFactory extends Factory
     {
         return $this->afterCreating(function (User $user) {
             $user->assignRole(UserRoleEnum::USER);
+
+            // ProfileDetail oluştur
+            ProfileDetail::factory()->create([
+                'user_id' => $user->id,
+                // // Diğer profil detaylarını buraya ekleyebilirsiniz.
+                // 'phone_number' => fake()->phoneNumber(),
+                // 'biography' => fake()->paragraph(),
+                // 'country' => fake()->country(),
+                // 'city' => fake()->city(),
+                // 'district' => fake()->word(), // veya başka bir uygun değer
+                // 'is_premium' => fake()->boolean(), // premium durumu
+            ]);
         });
     }
 

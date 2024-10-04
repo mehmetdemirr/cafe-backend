@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Interfaces\BusinessRepositoryInterface;
+use App\Interfaces\UserProfileRepositoryInterface;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -17,10 +18,12 @@ use Laravel\Sanctum\PersonalAccessToken;
 class AuthController extends Controller
 {
     protected $businessRepository;
+    protected $userProfileRepository;
 
-    public function __construct(BusinessRepositoryInterface $businessRepository)
+    public function __construct(BusinessRepositoryInterface $businessRepository, UserProfileRepositoryInterface $userProfileRepository)
     {
         $this->businessRepository = $businessRepository;
+        $this->userProfileRepository = $userProfileRepository;
     }
 
     public function login(LoginRequest $request)
@@ -80,6 +83,22 @@ class AuthController extends Controller
             $this->businessRepository->create([
                 "user_id" => $user->id,
                 // Diğer işletme bilgilerini de buraya ekleyebilirsiniz.
+            ]);
+        }// Rol USER ise profil oluşturma işlemi
+        else if ($role === UserRoleEnum::USER) {
+            // Kullanıcının zaten bir profili var mı kontrol et
+            if ($this->userProfileRepository->exists($user->id)) {
+                return response()->json([
+                    'success' => false,
+                    'data' => null,
+                    'message' => 'Kullanıcı zaten bir profile sahip.',
+                    'errors' => 'Bir kullanıcı yalnızca bir profil oluşturabilir.',
+                ], 400);
+            }
+
+            // Profil oluştur
+            $this->userProfileRepository->create([
+                'user_id' => $user->id,
             ]);
         }
 
