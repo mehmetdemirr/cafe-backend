@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\LoyaltyPointController;
 use App\Http\Controllers\Api\MatchController;
 use App\Http\Controllers\Api\MenuCategoryController;
 use App\Http\Controllers\Api\MenuItemController;
+use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\SupportMessageController;
 use App\Http\Controllers\Api\UserController;
@@ -141,6 +142,12 @@ Route::middleware(["log"])->group(function () {
             Route::get('/swiped-users/right', [MatchController::class, 'getRightSwipedUsers']);
             Route::get('/swiped-users/left', [MatchController::class, 'getLeftSwipedUsers']);
         });
+
+        Route::prefix('messages')->group(function () {
+            Route::get('/conversations', [MessageController::class, 'conversations']);
+            Route::get('/conversations/{user}', [MessageController::class, 'showConversation']);
+        });
+
         
         // //admin route
         // Route::middleware(["role:admin"])->group(function () {

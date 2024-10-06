@@ -22,8 +22,9 @@ class Matchup extends Model
         return $this->belongsTo(User::class, 'user2_id');
     }
 
-    public function messages()
-    {
-        return $this->hasMany(Message::class);
-    }
+    //veritabanında yok
+    // public function messages()
+    // {
+    //     return $this->hasMany(Message::class);
+    // }
 }

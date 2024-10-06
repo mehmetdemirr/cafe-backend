@@ -11,6 +11,7 @@ use App\Interfaces\LoyaltyPointRepositoryInterface;
 use App\Interfaces\MatchRepositoryInterface;
 use App\Interfaces\MenuCategoryRepositoryInterface;
 use App\Interfaces\MenuItemRepositoryInterface;
+use App\Interfaces\MessageRepositoryInterface;
 use App\Interfaces\NotificationRepositoryInterface;
 use App\Interfaces\SupportMessageRepositoryInterface;
 use App\Interfaces\UserProfileRepositoryInterface;
@@ -23,6 +24,7 @@ use App\Repositories\LoyaltyPointRepository;
 use App\Repositories\MatchRepository;
 use App\Repositories\MenuCategoryRepository;
 use App\Repositories\MenuItemRepository;
+use App\Repositories\MessageRepository;
 use App\Repositories\NotificationRepository;
 use App\Repositories\SupportMessageRepository;
 use App\Repositories\UserProfileRepository;
@@ -48,6 +50,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(SupportMessageRepositoryInterface::class, SupportMessageRepository::class);
         $this->app->bind(ComplaintRepositoryInterface::class, ComplaintRepository::class);
         $this->app->bind(UserProfileRepositoryInterface::class, UserProfileRepository::class);
+        $this->app->bind(MessageRepositoryInterface::class, MessageRepository::class);
     }
 
     /**

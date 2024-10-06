@@ -28,8 +28,9 @@ class Message extends Model
         return $this->belongsTo(User::class, 'receiver_id');
     }
 
-    public function match()
-    {
-        return $this->belongsTo(Matchup::class, 'match_id'); // Match modeli ile ilişki
-    }
+    //veritabanında yok 
+    // public function match()
+    // {
+    //     return $this->belongsTo(Matchup::class, 'match_id'); // Match modeli ile ilişki
+    // }
 }
