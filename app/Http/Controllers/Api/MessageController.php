@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Interfaces\MessageRepositoryInterface;
+use App\Models\Matchup;
 use Illuminate\Http\Request;
 
 class MessageController extends Controller
@@ -30,12 +31,12 @@ class MessageController extends Controller
                     'sender' => [
                         'id' => $message->sender->id,
                         'name' => $message->sender->name,
-                        'profile_picture' => $message->sender->profileDetail->profile_picture ?? null,
+                        // 'profile_picture' => $message->sender->profileDetail->profile_picture ?? null,
                     ],
                     'receiver' => [
                         'id' => $message->receiver->id,
                         'name' => $message->receiver->name,
-                        'profile_picture' => $message->receiver->profileDetail->profile_picture ?? null,
+                        // 'profile_picture' => $message->receiver->profileDetail->profile_picture ?? null,
                     ],
                     'timestamp' => $message->created_at,
                 ];
@@ -67,26 +68,10 @@ class MessageController extends Controller
 
             $conversations = $this->messageRepository->getConversationsByUserId($userId, $page, $perPage);
 
-            return $conversations;
-
-            $formattedConversations = $conversations->map(function($message) use ($userId) {
-                $otherUser = $message->sender_id === $userId ? $message->receiver : $message->sender;
-
-                return [
-                    'user' => [
-                        'id' => $otherUser->id,
-                        'name' => $otherUser->name,
-                        'profile_picture' => $otherUser->profileDetail->profile_picture ?? null,
-                    ],
-                    'last_message' => $message->content,
-                    'last_message_time' => $message->created_at,
-                ];
-            })->values(); // Dizini sıfırla ve temiz bir dizi döndür
-
             return response()->json([
                 'success' => true,
                 'message' => 'Conversations retrieved successfully',
-                'data' => $formattedConversations,
+                'data' => $conversations,
                 'errors' => null
             ], 200);
 
