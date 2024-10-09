@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\MessageSent;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\MessageRequest;
 use App\Interfaces\MessageRepositoryInterface;
 use App\Models\Matchup;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class MessageController extends Controller
@@ -83,5 +86,34 @@ class MessageController extends Controller
                 'errors' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function sendMessage(MessageRequest $request): JsonResponse
+    {
+        // Şu an giriş yapmış kullanıcıyı sender olarak alıyoruz
+        $userId = $request->user()->id;
+        $receiverId = $request->input('receiver_id');
+        
+        // Mesajı gönder
+        $result = $this->messageRepository->sendMessage($userId, $receiverId, $request->only(['content', 'media_path']));
+
+        if (!$result) {
+            return response()->json([
+                'success' => false,
+                'message' => "Gönderici ya da alıcı bulunamadı !",
+                'data' => null,
+                'errors' => null,
+            ], 400);
+        }
+
+        // Event tetikleme (Mesajı yayınla)
+        event(new MessageSent($userId, $receiverId, $request->input('content')));
+
+        return response()->json([
+            'success' => true,
+            'data' => true,
+            'message' => 'Mesaj başarıyla gönderildi.',
+            'errors' => null,
+        ], 200); 
     }
 }

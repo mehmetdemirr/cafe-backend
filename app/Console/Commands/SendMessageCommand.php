@@ -26,6 +26,6 @@ class SendMessageCommand extends Command
      */
     public function handle()
     {
-        MessageSent::dispatch("name","mesaj text");
+        event(new MessageSent(1, 7, "test deneme"));
     }
 }

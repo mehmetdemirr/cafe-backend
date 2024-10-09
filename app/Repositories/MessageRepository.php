@@ -75,4 +75,25 @@ class MessageRepository implements MessageRepositoryInterface
         ];
     }
 
+    public function sendMessage(int $senderId, int $receiverId, array $data)
+    {
+        // Gönderici ve alıcı id'lerinin doğruluğunu kontrol et
+        $sender = User::find($senderId);
+        $receiver = User::find($receiverId);
+
+        if (!$sender || !$receiver) {
+            return false;
+        }
+
+        // Mesaj oluşturma
+         Message::create([
+            'sender_id' => $senderId,
+            'receiver_id' => $receiverId,
+            'content' => $data['content'],
+            'media_path' => $data['media_path'] ?? null, // Media path varsa ekle
+        ]);
+
+        return true;
+    }
+
 }

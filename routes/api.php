@@ -146,6 +146,7 @@ Route::middleware(["log"])->group(function () {
         Route::prefix('messages')->group(function () {
             Route::get('/conversations', [MessageController::class, 'conversations']);
             Route::get('/conversations/{user}', [MessageController::class, 'showConversation']);
+            Route::post('/send', [MessageController::class, 'sendMessage']);
         });
 
         
