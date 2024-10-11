@@ -18,6 +18,7 @@ class MenuCategoryFactory extends Factory
         return [
             'name' => $this->faker->word, // Rastgele bir kategori adı
             'business_id' => Business::inRandomOrder()->first()->id, // Rastgele bir iş id'si al
+            'views' => 0,
         ];
     }
 }

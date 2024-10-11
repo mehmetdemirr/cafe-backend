@@ -7,6 +7,7 @@ use App\Http\Requests\MenuItemRequest;
 use App\Interfaces\MenuItemRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Storage;
 
 class MenuItemController extends Controller
 {
@@ -45,7 +46,7 @@ class MenuItemController extends Controller
         ]);
     }
 
-        // Retrieve menu items by category ID for a user
+    // Retrieve menu items by category ID for a user
     public function getByCategoryForUser(int $businessId, int $categoryId): JsonResponse
     {
         // İşletme ve kategoriye göre menü öğelerini getir
@@ -62,9 +63,8 @@ class MenuItemController extends Controller
     // Create a new menu item
     public function store(MenuItemRequest $request): JsonResponse
     {
-        $businessId = $request->user()->business->id; // İşletme ID'sini al
+        $businessId = $request->user()->business->id;
 
-        // İşletme ID'si yoksa hata döndür
         if (!$businessId) {
             return response()->json([
                 'data' => null,
@@ -74,7 +74,17 @@ class MenuItemController extends Controller
             ], 400);
         }
 
-        $data = array_merge($request->validated(), ['business_id' => $businessId]);
+        // Dosya yükleme
+        if ($request->hasFile('image_url')) {
+            $imagePath = $request->file('image_url')->store('menu_items', 'public');
+            $fullImageUrl = asset('storage/' . $imagePath); // Tam URL oluşturma
+        }
+
+        $data = array_merge($request->validated(), [
+            'business_id' => $businessId,
+            'image_url' =>  $fullImageUrl ?? null, // Görsel varsa tam URL'yi kaydet
+        ]);
+
         $item = $this->menuItemRepository->create($data);
 
         return response()->json([
@@ -82,7 +92,7 @@ class MenuItemController extends Controller
             'success' => true,
             'message' => 'Menü öğesi başarıyla oluşturuldu.',
             'errors' => null,
-        ], 201);
+        ], 200);
     }
 
     // Update an existing menu item
@@ -90,7 +100,6 @@ class MenuItemController extends Controller
     {
         $item = $this->menuItemRepository->findById($id);
 
-        // Menü öğesi yoksa hata döndür
         if (!$item) {
             return response()->json([
                 'data' => null,
@@ -100,38 +109,31 @@ class MenuItemController extends Controller
             ], 404);
         }
 
-        $businessId = $request->user()->business->id; // İşletme ID'sini al
+        $businessId = $request->user()->business->id;
 
-        // İşletme ID'si yoksa hata döndür
-        if (!$businessId) {
-            return response()->json([
-                'data' => null,
-                'success' => false,
-                'message' => 'İşletme bulunamadı.',
-                'errors' => null,
-            ], 400);
-        }
-
-        // Menü öğesi işletme ID'si ile eşleşiyor mu kontrol et
-        if ($item['business_id'] !== $businessId) {
+        if (!$businessId || $item['business_id'] !== $businessId) {
             return response()->json([
                 'data' => null,
                 'success' => false,
                 'message' => 'Geçersiz istek.',
                 'errors' => 'Bu öğeye erişim izniniz yok.',
-            ], 400); // Bad Request
+            ], 400);
         }
 
-        $updated = $this->menuItemRepository->update($id, $request->validated());
-
-        if (!$updated) {
-            return response()->json([
-                'data' => null,
-                'success' => false,
-                'message' => 'Menü öğesi güncellenirken bir hata oluştu.',
-                'errors' => 'Menü öğesi bulunamadı veya güncellenemedi.',
-            ], 404);
+        // Resim dosyası kontrolü ve eski resmi silme
+        if ($request->hasFile('image_url')) {
+            if ($item['image_url']) {
+                // Eski resim URL'sinden dosya yolunu elde etme
+                $oldImagePath = str_replace(asset('storage') . '/', '', $item['image_url']);
+                Storage::disk('public')->delete($oldImagePath); // Eski resmi sil
+            }
+            $imagePath = $request->file('image_url')->store('menu_items', 'public'); // Yeni resmi yükle
+            $fullImageUrl = asset('storage/' . $imagePath); // Yeni tam URL
         }
+        $updated = $this->menuItemRepository->update($id, array_merge(
+            $request->validated(),
+            ['image_url' => $fullImageUrl ?? $item['image_url']] // Yeni resim varsa güncelle, yoksa mevcut kalsın
+        ));
 
         return response()->json([
             'data' => $this->menuItemRepository->findById($id),
@@ -155,14 +157,20 @@ class MenuItemController extends Controller
             ], 404);
         }
 
-        // Ensure the item belongs to the user's business
         if ($item['business_id'] !== request()->user()->business->id) {
             return response()->json([
                 'data' => null,
                 'success' => false,
                 'message' => 'Geçersiz istek.',
                 'errors' => 'Bu öğeye erişim izniniz yok.',
-            ], 400); // Bad Request
+            ], 400);
+        }
+
+        // Resmi sil
+        if ($item['image_url']) {
+            // URL'den dosya yolunu almak
+            $imagePath = str_replace(asset('storage') . '/', '', $item['image_url']);
+            Storage::disk('public')->delete($imagePath); // Resmi sil
         }
 
         $this->menuItemRepository->delete($id);

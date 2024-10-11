@@ -12,8 +12,17 @@ class Business extends Model
     protected $fillable = [
         'user_id',
         'name',
+        'slug',
         'address',
         'qr_code',
+        'phone_number',         // Telefon numarası
+        'website_url',          // Web sitesi adresi
+        'description',          // İşletme açıklaması
+        'location_latitude',    // Konum (enlem)
+        'location_longitude',   // Konum (boylam)
+        'image_url',            // İşletme resmi
+        'opening_time',         // Açılış saati
+        'closing_time',         // Kapanış saati
     ];
 
     // İlişkiler

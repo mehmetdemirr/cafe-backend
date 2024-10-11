@@ -21,10 +21,10 @@ class MenuItemRequest extends BaseRequest
             'price' => 'required|numeric',
             'description' => 'nullable|string',
             'menu_category_id' => 'required|exists:menu_categories,id',
-            'views' => 'nullable|integer',
             'is_available' => 'nullable|boolean',
             'additional_info' => 'nullable|string',
             'calories' => 'nullable|integer',
+            'image_url' => 'nullable|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
 
@@ -35,6 +35,9 @@ class MenuItemRequest extends BaseRequest
             'price.required' => 'Price is required.',
             'menu_category_id.required' => 'Menu category ID is required.',
             'menu_category_id.exists' => 'The selected menu category does not exist.',
+            'image_url.image' => 'Dosya bir resim olmalıdır.',
+            'image_url.mimes' => 'Resim dosyası yalnızca jpeg, png, jpg veya gif formatında olmalıdır.',
+            'image_url.max' => 'Resim dosyası maksimum 2MB olabilir.',
         ];
     }
 }

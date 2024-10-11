@@ -19,5 +19,5 @@ window.Echo = new Echo({
 
 window.Echo.private(`chat.1.7`)
     .listen('MessageSent', (e) => {
-        console.log('Mesaj alındı:', e);
+        console.log('Mesaj alındı:', e); 
     });

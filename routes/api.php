@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\MenuCategoryController;
 use App\Http\Controllers\Api\MenuItemController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\SupportMessageController;
 use App\Http\Controllers\Api\UserController;
 use App\Models\BusinessRating;
@@ -57,11 +58,9 @@ Route::middleware(["log"])->group(function () {
             Route::post('{id}/rate', [BusinessController::class, 'rate']);
             // İşletme puanlarını listeleme
             Route::get('{id}/ratings', [BusinessController::class, 'ratings']);
-            Route::post('/', [BusinessController::class, 'store']);
-            Route::put('{id}', [BusinessController::class, 'update']);
-            Route::delete('/{id}', [BusinessController::class, 'destroy']);
-            Route::get('/{id}', [BusinessController::class, 'show']);
-            Route::get('/', [BusinessController::class, 'index']);
+            Route::put('/', [BusinessController::class, 'update']);
+            Route::get('/all', [BusinessController::class, 'index']);
+            Route::get('/', [BusinessController::class, 'show']);
         });
 
         Route::prefix(prefix: 'campaigns')->group(function () {
@@ -94,7 +93,6 @@ Route::middleware(["log"])->group(function () {
         });
 
         Route::prefix('menu-categories')->group(function () {
-            Route::get('/business/{businessId}', [MenuCategoryController::class, 'getCategoriesForCustomer']);
             Route::get('/', [MenuCategoryController::class, 'index']);
             Route::post('/', [MenuCategoryController::class, 'store']);
             Route::put('/{id}', [MenuCategoryController::class, 'update']);
@@ -105,10 +103,9 @@ Route::middleware(["log"])->group(function () {
         Route::prefix('menu-items')->group(function () {
             Route::get('/', [MenuItemController::class, 'index']); 
             Route::get('/category/{categoryId}', [MenuItemController::class, 'getByCategoryId']); // Kategori ID'sine göre menü öğelerini getir
-            Route::get( '/user/{businessId}/category/{categoryId}', [MenuItemController::class, 'getByCategoryForUser']);
             Route::post('/', [MenuItemController::class, 'store']);
             Route::get('/{id}', [MenuItemController::class, 'show']);
-            Route::put('/{id}', [MenuItemController::class, 'update']);
+            Route::post('/{id}', [MenuItemController::class, 'update']);
             Route::delete('/{id}', [MenuItemController::class, 'destroy']);
         });   
         
@@ -149,6 +146,11 @@ Route::middleware(["log"])->group(function () {
             Route::post('/send', [MessageController::class, 'sendMessage']);
         });
 
+        Route::prefix('statistics')->group(function () {
+            Route::get('/category-views', [ReportController::class, 'getCategoryViews']);
+            Route::get('/category-view-stats', [ReportController::class, 'getCategoryViewStats']);
+        });
+
         
         // //admin route
         // Route::middleware(["role:admin"])->group(function () {
@@ -171,4 +173,8 @@ Route::middleware(["log"])->group(function () {
         Route::post('auth/password-forgot',[ForgotPasswordController::class,'forgotPassword']);
         Route::post('auth/password-reset',[ResetPasswordController::class,'resetPassword']);
     });
+
+    Route::get('menu-categories/business/{businessId}', [MenuCategoryController::class, 'getCategoriesForCustomer']);
+    Route::get( 'menu-items/user/{businessId}/category/{categoryId}', [MenuItemController::class, 'getByCategoryForUser']);
+    Route::get('/businesses/{slug}', [BusinessController::class, 'showBySlug']);
 });

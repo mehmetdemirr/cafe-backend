@@ -10,6 +10,7 @@ interface BusinessRepositoryInterface
     public function update(int $id, array $data): bool;
     public function delete(int $id): bool;
     public function find(int $id): ?Business;
+    public function findBySlug(string $slug): ?Business;
     public function all(): array;
     public function addToFavorites(int $businessId, int $userId): bool;
     public function removeFromFavorites(int $businessId, int $userId): bool;

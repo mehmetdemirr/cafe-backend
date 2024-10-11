@@ -21,37 +21,38 @@ class BusinessController extends Controller
         $this->businessRepository = $businessRepository;
     }
 
-    public function store(BusinessCreateRequest $request): JsonResponse
+    // public function store(BusinessCreateRequest $request): JsonResponse
+    // {
+    //     $userId = $request->user()->id;
+
+    //     // Kullanıcının zaten bir işletmesi var mı kontrol et
+    //     if ($this->businessRepository->exists(['user_id' => $userId])) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'data' => null,
+    //             'message' => 'Bir kullanıcı yalnızca bir tane işletme oluşturabilir.',
+    //             'errors' => 'Kullanıcı zaten bir işletmeye sahip.',
+    //         ], 400);
+    //     }
+
+    //     $validatedData = $request->validated();
+    //     $validatedData['user_id'] = $userId;
+
+    //     $business = $this->businessRepository->create($validatedData);
+    //     return response()->json([
+    //         'success' => true,
+    //         'data' => $business,
+    //         'message' => 'İşletme başarıyla oluşturuldu.',
+    //         'errors' => null,
+    //     ], 200);
+    // }
+
+    public function update(BusinessUpdateRequest $request): JsonResponse
     {
-        $userId = $request->user()->id;
-
-        // Kullanıcının zaten bir işletmesi var mı kontrol et
-        if ($this->businessRepository->exists(['user_id' => $userId])) {
-            return response()->json([
-                'success' => false,
-                'data' => null,
-                'message' => 'Bir kullanıcı yalnızca bir tane işletme oluşturabilir.',
-                'errors' => 'Kullanıcı zaten bir işletmeye sahip.',
-            ], 400);
-        }
-
         $validatedData = $request->validated();
-        $validatedData['user_id'] = $userId;
+        $businessId = $request->user()->business->id;
 
-        $business = $this->businessRepository->create($validatedData);
-        return response()->json([
-            'success' => true,
-            'data' => $business,
-            'message' => 'İşletme başarıyla oluşturuldu.',
-            'errors' => null,
-        ], 200);
-    }
-
-    public function update(BusinessUpdateRequest $request, $id): JsonResponse
-    {
-        $validatedData = $request->validated();
-        $validatedData['user_id'] = $request->user()->id;
-        $updated = $this->businessRepository->update($id, $validatedData);
+        $updated = $this->businessRepository->update($businessId, $validatedData);
         if ($updated) {
             return response()->json([
                 'success' => true,
@@ -68,28 +69,49 @@ class BusinessController extends Controller
         ], 404);
     }
 
-    public function destroy(int $id): JsonResponse
+    // public function destroy(int $id): JsonResponse
+    // {
+    //     $deleted = $this->businessRepository->delete($id);
+    //     if ($deleted) {
+    //         return response()->json([
+    //             'success' => true,
+    //             'data' => null,
+    //             'message' => 'İşletme başarıyla silindi.',
+    //             'errors' => null,
+    //         ], 200);
+    //     }
+    //     return response()->json([
+    //         'success' => false,
+    //         'data' => null,
+    //         'message' => 'İşletme silinemedi.',
+    //         'errors' => null,
+    //     ], 404);
+    // }
+
+    public function show(Request $request): JsonResponse
     {
-        $deleted = $this->businessRepository->delete($id);
-        if ($deleted) {
+        $businessId =  $request->user()->business->id;
+        $business = $this->businessRepository->find($businessId);
+        if ($business) {
             return response()->json([
                 'success' => true,
-                'data' => null,
-                'message' => 'İşletme başarıyla silindi.',
+                'data' => $business,
+                'message' => 'İşletme bilgileri alındı.',
                 'errors' => null,
             ], 200);
         }
         return response()->json([
             'success' => false,
             'data' => null,
-            'message' => 'İşletme silinemedi.',
+            'message' => 'İşletme bulunamadı.',
             'errors' => null,
         ], 404);
     }
 
-    public function show(int $id): JsonResponse
+    // Slug ile işletme gösterme
+    public function showBySlug(string $slug): JsonResponse
     {
-        $business = $this->businessRepository->find($id);
+        $business = $this->businessRepository->findBySlug($slug);
         if ($business) {
             return response()->json([
                 'success' => true,

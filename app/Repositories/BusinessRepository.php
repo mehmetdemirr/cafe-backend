@@ -11,12 +11,20 @@ class BusinessRepository implements BusinessRepositoryInterface
 {
     public function all(): array
     {
-        return Business::with(['owner', 'menuCategories', 'campaigns', 'events', 'ratings'])->get()->toArray();
+        return Business::with(['owner'])->get()->toArray();
     }
 
     public function find(int $id): ?Business
     {
-        return Business::with(['owner', 'menuCategories', 'campaigns', 'events', 'ratings'])->find($id);
+        return Business::with(['owner'])->find($id);
+    }
+
+    // Slug ile business bulma metodu
+    public function findBySlug(string $slug): ?Business
+    {
+        return Business::with(['owner'])
+                       ->where('slug', $slug)
+                       ->first();
     }
 
     public function create(array $data): Business

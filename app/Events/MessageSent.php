@@ -45,7 +45,7 @@ class MessageSent implements ShouldBroadcastNow //TODO sonrasında now kaldırı
      */
     public function broadcastOn(): Channel
     {
-        return new PrivateChannel( "chat.$this->sender_id.$this->receiver_id");
+        return new PrivateChannel( "chat." . $this->sender_id . "." . $this->receiver_id);
     }
 
     public function broadcastWith(): array

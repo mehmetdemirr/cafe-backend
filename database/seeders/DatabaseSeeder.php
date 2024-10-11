@@ -44,6 +44,7 @@ class DatabaseSeeder extends Seeder
         //burda işletme ise orda da kayıt edilecek
         Business::create([
             "user_id" => $business_user->id,
+            "slug" => "olga-cafe"
         ]);
         $business_user->assignRole(UserRoleEnum::BUSINESS);
 

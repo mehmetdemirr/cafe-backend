@@ -13,11 +13,11 @@ class MenuItem extends Model
         'price',
         'description',
         'menu_category_id',
-        'business_id',       
-        'views',           
+        'business_id',    
         'is_available',  
         'additional_info',   // Ek bilgi
-        'calories',        
+        'calories',
+        'image_url',        
     ];
 
     // İlişkiler

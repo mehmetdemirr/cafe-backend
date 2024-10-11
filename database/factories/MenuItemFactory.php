@@ -22,7 +22,6 @@ class MenuItemFactory extends Factory
             'description' => $this->faker->sentence,
             'menu_category_id' => null, // Burasını seeder'da belirleyeceğiz
             'business_id' => null, // Burasını seeder'da belirleyeceğiz
-            'views' => $this->faker->numberBetween(0, 1000),
             'is_available' => $this->faker->boolean,
             'additional_info' => $this->faker->sentence,
             'calories' => $this->faker->numberBetween(50, 500),
