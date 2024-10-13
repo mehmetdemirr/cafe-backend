@@ -12,6 +12,7 @@ interface BusinessRepositoryInterface
     public function find(int $id): ?Business;
     public function findBySlug(string $slug): ?Business;
     public function all(): array;
+    public function getNearbyBusinesses(int $userId,float $latitude, float $longitude, float $radius): array;
     public function addToFavorites(int $businessId, int $userId): bool;
     public function removeFromFavorites(int $businessId, int $userId): bool;
     public function rateBusiness(int $businessId, int $userId, int $rating, ?string $comment = null): bool;

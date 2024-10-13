@@ -8,6 +8,7 @@ use App\Interfaces\BusinessRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Requests\BusinessCreateRequest;
 use App\Http\Requests\BusinessUpdateRequest;
+use App\Http\Requests\NearbyRequest;
 use App\Http\Requests\RateBusinessRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -135,6 +136,24 @@ class BusinessController extends Controller
             'success' => true,
             'data' => $businesses,
             'message' => 'İşletmeler listelendi.',
+            'errors' => null,
+        ], 200);
+    }
+
+    public function nearby(NearbyRequest $request): JsonResponse
+    {
+        $latitude = $request->input('latitude');
+        $longitude = $request->input('longitude');
+        $radius = $request->input('radius', 5); // Default radius is 5 kilometers
+        $userId = $request->user()->id;
+        // Validate latitude and longitude inputs if necessary
+
+        $businesses = $this->businessRepository->getNearbyBusinesses($userId,$latitude, $longitude, $radius);
+
+        return response()->json([
+            'success' => true,
+            'data' => $businesses,
+            'message' => 'Nearby businesses retrieved successfully.',
             'errors' => null,
         ], 200);
     }

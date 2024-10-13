@@ -14,6 +14,28 @@ class BusinessRepository implements BusinessRepositoryInterface
         return Business::with(['owner'])->get()->toArray();
     }
 
+    public function getNearbyBusinesses(int $userId,float $latitude, float $longitude, float $radius): array
+    {
+        $favoriteBusinessIds = UserFavoriteBusiness::where('user_id', $userId)
+        ->pluck('business_id'); // Favori iş yerlerinin ID'lerini al
+
+        // Earth's radius in kilometers
+        $earthRadius = 6371;
+
+
+        // Find businesses within the radius
+        return Business::select('*')
+            ->selectRaw(
+                "(? * acos(cos(radians(?)) * cos(radians(location_latitude)) * cos(radians(location_longitude) - radians(?)) +
+                sin(radians(?)) * sin(radians(location_latitude)))) AS distance",
+                [$earthRadius, $latitude, $longitude, $latitude]
+            )
+            ->whereNotIn('id', $favoriteBusinessIds) // Favori iş yerlerini hariç tut
+            ->having('distance', '<', $radius)
+            ->get()
+            ->toArray();
+    }
+
     public function find(int $id): ?Business
     {
         return Business::with(['owner'])->find($id);

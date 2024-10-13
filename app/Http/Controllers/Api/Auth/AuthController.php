@@ -14,6 +14,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\PersonalAccessToken;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -82,6 +83,7 @@ class AuthController extends Controller
             // İşletme oluştur
             $this->businessRepository->create([
                 "user_id" => $user->id,
+                "slug" => Str::uuid()
                 // Diğer işletme bilgilerini de buraya ekleyebilirsiniz.
             ]);
         }// Rol USER ise profil oluşturma işlemi
