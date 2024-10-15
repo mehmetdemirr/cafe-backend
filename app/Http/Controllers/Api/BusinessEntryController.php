@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BusinessEntryRequest;
+use App\Http\Requests\BusinessEntryWithLocationRequest;
 use App\Interfaces\BusinessEntryRepositoryInterface;
 use Illuminate\Http\Request;
 
@@ -16,12 +17,19 @@ class BusinessEntryController extends Controller
         $this->businessEntryRepository = $businessEntryRepository;
     }
 
-    public function enterCafe(Request $request)
+    public function enterCafe(BusinessEntryWithLocationRequest $request)
     {
         $qrCode = $request->input('qr_code');
         $userId = $request->user()->id;
 
-        // İlk olarak QR kodunu kontrol et
+        // Kullanıcı konum bilgileri
+        $userLatitude = $request->input('latitude');
+        $userLongitude = $request->input('longitude');
+
+        // Giriş yapılabilmesi için maksimum mesafe (kilometre cinsinden)
+        $maxDistance = 0.05; // 100 metre mesafe limiti örnek olarak
+
+        // QR kodunu kontrol et
         $business = $this->businessEntryRepository->findByQrCode($qrCode);
 
         if (!$business) {
@@ -30,7 +38,21 @@ class BusinessEntryController extends Controller
                 'message' => 'QR kodu bulunamadı',
                 'data' => null,
                 'errors' => 'Geçersiz QR kodu'
-            ], 404); // QR kodu bulunamadı hatası
+            ], 404);
+        }
+
+        // Kafeye olan mesafeyi hesapla (Haversine formülü)
+        $earthRadius = 6371; // Dünya'nın yarıçapı (kilometre cinsinden)
+        $distance = $this->calculateDistance($userLatitude, $userLongitude, $business->location_latitude, $business->location_longitude, $earthRadius);
+
+        // Eğer mesafe belirlenen maksimum mesafeden büyükse giriş yapılamaz
+        if ($distance > $maxDistance) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kafeye çok uzaksınız. Giriş yapılamaz.',
+                'data' => null,
+                'errors' => 'Kafe konumuna çok uzaksınız'
+            ], 400);
         }
 
         // Kullanıcının zaten kafede olup olmadığını kontrol et
@@ -42,10 +64,10 @@ class BusinessEntryController extends Controller
                 'message' => 'Kullanıcı zaten bu kafeye giriş yapmış',
                 'data' => null,
                 'errors' => 'Zaten giriş yapıldı'
-            ], 400); // Kullanıcı zaten giriş yapmış
+            ], 400);
         }
 
-        // Eğer QR kodu geçerli ve kullanıcı daha önce giriş yapmadıysa giriş yap
+        // Eğer QR kodu geçerli ve mesafe uygun ise giriş yap
         $success = $this->businessEntryRepository->enterCafe($userId, $qrCode);
 
         if ($success) {
@@ -57,7 +79,6 @@ class BusinessEntryController extends Controller
             ], 200);
         }
 
-        // Diğer durumlar için genel hata mesajı
         return response()->json([
             'success' => false,
             'message' => 'Kafeye giriş başarısız',
@@ -65,6 +86,24 @@ class BusinessEntryController extends Controller
             'errors' => 'Giriş işlemi sırasında bir hata oluştu'
         ], 400);
     }
+
+    // Kullanıcının ve kafenin konum bilgilerini kullanarak mesafeyi hesaplayan fonksiyon
+    private function calculateDistance($lat1, $lon1, $lat2, $lon2, $earthRadius)
+    {
+        $latFrom = deg2rad($lat1);
+        $lonFrom = deg2rad($lon1);
+        $latTo = deg2rad($lat2);
+        $lonTo = deg2rad($lon2);
+
+        $latDelta = $latTo - $latFrom;
+        $lonDelta = $lonTo - $lonFrom;
+
+        $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+            cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+
+        return $earthRadius * $angle; // Mesafe kilometre cinsindendir
+    }
+
 
     // Kafeden çıkış
     public function leaveCafe(BusinessEntryRequest $request)
