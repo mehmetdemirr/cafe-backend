@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Interfaces\BusinessEntryRepositoryInterface;
 use App\Interfaces\BusinessRatingRepositoryInterface;
 use App\Interfaces\BusinessRepositoryInterface;
 use App\Interfaces\CampaignInterface;
@@ -16,6 +17,7 @@ use App\Interfaces\NotificationRepositoryInterface;
 use App\Interfaces\ReportInterface;
 use App\Interfaces\SupportMessageRepositoryInterface;
 use App\Interfaces\UserProfileRepositoryInterface;
+use App\Repositories\BusinessEntryRepository;
 use App\Repositories\BusinessRatingRepository;
 use App\Repositories\BusinessRepository;
 use App\Repositories\CampaignRepository;
@@ -54,6 +56,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(UserProfileRepositoryInterface::class, UserProfileRepository::class);
         $this->app->bind(MessageRepositoryInterface::class, MessageRepository::class);
         $this->app->bind(ReportInterface::class, ReportRepository::class);
+        $this->app->bind(BusinessEntryRepositoryInterface::class, BusinessEntryRepository::class);
     }
 
     /**

@@ -16,7 +16,6 @@ class BusinessCreateRequest extends BaseRequest
         return [
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
-            'qr_code' => 'nullable|string|max:255',
         ];
     }
 

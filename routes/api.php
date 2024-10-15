@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\ForgotPasswordController;
 use App\Http\Controllers\Api\Auth\ResetPasswordController;
 use App\Http\Controllers\Api\BusinessController;
+use App\Http\Controllers\Api\BusinessEntryController;
 use App\Http\Controllers\Api\BusinessRatingController;
 use App\Http\Controllers\Api\CampaignController;
 use App\Http\Controllers\Api\CategoryController;
@@ -151,6 +152,14 @@ Route::middleware(["log"])->group(function () {
             Route::get('/category-views', [ReportController::class, 'getCategoryViews']);
             Route::get('/category-view-stats', [ReportController::class, 'getCategoryViewStats']);
         });
+
+        Route::prefix('business-entry')->group(function () {
+            Route::post('/enter-cafe', [BusinessEntryController::class, 'enterCafe']);
+            Route::post('/leave-cafe', [BusinessEntryController::class, 'leaveCafe']);
+            Route::get('/show-users-in-cafe', [BusinessEntryController::class, 'showUsersInCafe']);
+            Route::post('/is-user-in-cafe', [BusinessEntryController::class, 'isUserInCafe']);
+        });
+
 
         
         // //admin route

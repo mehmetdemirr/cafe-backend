@@ -8,6 +8,7 @@ use App\Models\ProfileDetail;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -44,7 +45,8 @@ class DatabaseSeeder extends Seeder
         //burda işletme ise orda da kayıt edilecek
         Business::create([
             "user_id" => $business_user->id,
-            "slug" => "olga-cafe"
+            "slug" => "olga-cafe",
+            "qr_code" => Str::uuid(),
         ]);
         $business_user->assignRole(UserRoleEnum::BUSINESS);
 

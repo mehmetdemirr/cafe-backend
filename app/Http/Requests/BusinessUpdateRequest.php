@@ -16,7 +16,7 @@ class BusinessUpdateRequest extends BaseRequest
         return [
             'name' => 'sometimes|required|string|max:255',
             'address' => 'sometimes|required|string|max:255',
-            'qr_code' => 'nullable|string|max:255',
+            // 'qr_code' => 'nullable|string|max:255',
             'phone_number' => 'sometimes|nullable|string|max:15', // Telefon numarası için kural
             'website_url' => 'sometimes|nullable|url|max:255', // Web sitesi adresi için kural
             'description' => 'sometimes|nullable|string|max:500', // İşletme açıklaması için kural

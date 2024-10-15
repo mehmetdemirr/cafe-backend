@@ -83,7 +83,8 @@ class AuthController extends Controller
             // İşletme oluştur
             $this->businessRepository->create([
                 "user_id" => $user->id,
-                "slug" => Str::uuid()
+                "slug" => Str::uuid(),
+                "qr_code" => Str::uuid(),
                 // Diğer işletme bilgilerini de buraya ekleyebilirsiniz.
             ]);
         }// Rol USER ise profil oluşturma işlemi

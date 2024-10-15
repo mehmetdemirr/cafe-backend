@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('slug')->unique();
             $table->string('address')->nullable();
-            $table->string('qr_code')->nullable()->unique();   //giriş qr olacak
+            $table->string('qr_code')->unique();   //giriş qr olacak
             $table->string('phone_number')->nullable();       // Telefon numarası
             $table->string('website_url')->nullable();        // Web sitesi URL'si
             $table->text('description')->nullable();          // İşletme açıklaması
