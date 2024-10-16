@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Log;
 
@@ -8,7 +9,7 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-// Broadcast::channel('chat.{sender_id}.{receiver_id}', function ($user, $sender_id, $receiver_id) {
-//     Log::info('privatechannel chat.{sender_id}.{receiver_id}');
-//     return (int) $user->id === (int) $sender_id || (int) $user->id === (int) $receiver_id;
-// });
+Broadcast::channel('chat.{user1}.{user2}', function (User $user, $user1, $user2) {
+    // Kullanıcılar sadece kendi aralarındaki kanallara abone olabilir
+    return in_array($user->id, [(int) $user1, (int) $user2]);
+});

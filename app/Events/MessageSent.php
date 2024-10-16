@@ -15,6 +15,7 @@ class MessageSent implements ShouldBroadcastNow //TODO sonrasında now kaldırı
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public string $channelName;
     public string $text;
     public int $sender_id;
     public int $receiver_id;
@@ -22,11 +23,13 @@ class MessageSent implements ShouldBroadcastNow //TODO sonrasında now kaldırı
      * Create a new event instance.
      */
     public function __construct(
+        string $channelName,
         int $sender_id, 
         int $receiver_id, 
         string $text, 
         )
     {
+        $this->channelName = $channelName;
         $this->sender_id = $sender_id;
         $this->receiver_id = $receiver_id;
         $this->text = $text;
@@ -45,7 +48,7 @@ class MessageSent implements ShouldBroadcastNow //TODO sonrasında now kaldırı
      */
     public function broadcastOn(): Channel
     {
-        return new PrivateChannel( "chat." . $this->sender_id . "." . $this->receiver_id);
+        return new Channel($this->channelName);
     }
 
     public function broadcastWith(): array

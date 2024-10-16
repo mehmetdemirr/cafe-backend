@@ -145,11 +145,21 @@ class MatchRepository implements MatchRepositoryInterface
         // Kullanıcının hem swiped (kaydırdığı) hem de matched (eşleştiği) kullanıcılar ile kendisini hariç tutarak diğer kullanıcıları al
         $matches = User::whereIn('id', array_merge($usersWithFavoriteBusinesses))
             ->whereNotIn('id', array_merge($swipedUserIds, $matchedUserIdsFromMatchups, [$userId])) // Kendini de hariç tut
+            ->with('profileDetail')
             // ->with('favoriteBusinesses') // Her kullanıcı için favori işletmelerini getir
             ->distinct() // Her kullanıcının yalnızca bir kez görünmesini sağla
             ->get();
 
-        return $matches->toArray();
+        // Kullanıcılardan gerekli bilgileri al ve döndür
+        return $matches->map(function($match) {
+            return [
+                'id' => $match->id,
+                'name' => $match->name,
+                'biography' => $match->profileDetail->biography ?? null, // Biyografi bilgisi
+                'profile_picture' => $match->profileDetail->profile_picture ?? null, // Profil resmi bilgisi
+                // Diğer gerekli bilgiler
+            ];
+        })->toArray();
     }
 
     //sağa kaydırdığı kullanıcıları alma

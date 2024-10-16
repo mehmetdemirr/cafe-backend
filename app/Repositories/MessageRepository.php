@@ -21,7 +21,7 @@ class MessageRepository implements MessageRepositoryInterface
                       ->where('receiver_id', $userId);
             })
             // ->with(['sender.profileDetail', 'receiver.profileDetail'])
-            ->orderBy('created_at', 'asc')
+            ->orderBy('created_at', 'desc')
             ->forPage($page, $perPage) // Sayfalama için
             ->paginate($perPage);
     }

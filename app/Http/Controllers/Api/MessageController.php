@@ -106,8 +106,11 @@ class MessageController extends Controller
             ], 400);
         }
 
-         // Event tetikleme (Mesajı yayınla)
-        MessageSent::dispatch($userId, $receiverId, $request->input('content'));
+        // Kanal adını oluştur (ID'lere göre sabit bir kanal yapısı)
+        $channelName = 'chat.' . min($userId, $receiverId) . '.' . max($userId, $receiverId);
+
+        // Event tetikleme (Mesajı yayınla)
+        MessageSent::dispatch($channelName, $userId, $receiverId, $request->input('content'));
 
         return response()->json([
             'success' => true,
