@@ -2,25 +2,28 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helper\OneSignalHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\ProfileDetailRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Interfaces\UserProfileRepositoryInterface;
+use App\Services\FileService;
 use App\Services\LogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
     protected $logService;
-    protected $userProfileRepository; // UserProfileRepository'yi tanımla
+    protected $userProfileRepository; 
+    protected $fileService;
 
-    public function __construct(LogService $logService, UserProfileRepositoryInterface $userProfileRepository)
+    public function __construct(LogService $logService, UserProfileRepositoryInterface $userProfileRepository,FileService $fileService)
     {
         $this->logService = $logService;
-        $this->userProfileRepository = $userProfileRepository; // Repository'yi initialize et
+        $this->userProfileRepository = $userProfileRepository;
+        $this->fileService = $fileService;
     }
 
     public function user(Request $request)
@@ -28,6 +31,9 @@ class UserController extends Controller
         $this->logService->logWarning('Kullanıcı bilgisi');
         // Kullanıcıyı rollerle birlikte yükle
         $user = $request->user()->load('roles');
+
+         // OneSignalHelper::sendToAllUsers('Genel Mesaj', 'https://example.com');
+          OneSignalHelper::sendToUser($user->onesignal_id, 'Özel Mesaj', 'https://example.com');
 
         return response()->json([
             'success'=> true,
@@ -99,17 +105,22 @@ class UserController extends Controller
 
         // Profil fotoğrafı varsa güncellenecek, önceki fotoğrafı sil ve yeni fotoğrafı ekle
         if ($request->hasFile('profile_picture')) {
-            // Önceki fotoğraf varsa sil
-            if ($userProfile && $userProfile->profile_picture) {
-                // Storage'den sil
-                Storage::disk('public')->delete($userProfile->profile_picture);
+            // Eski fotoğraf yolunu al
+            $oldFilePath = $userProfile->profile_picture ?? null;
+    
+            // Yeni fotoğrafı yükle
+            $file = $request->file('profile_picture');
+            $path = 'profile_pictures'; // Profil fotoğrafları için dosya yolu
+    
+            // Eski dosyayı sil ve yeni dosyayı yükle
+            // Eğer eski dosya yolu mevcutsa, eski dosyayı sil ve yeni dosyayı yükle
+            if ($oldFilePath) {
+                $updatedFilePath = $this->fileService->update($file, $oldFilePath, $path);
+                $profileData['profile_picture'] = $updatedFilePath; // Yeni dosya yolunu ekle
+            } else {
+                // Eğer eski dosya yolu yoksa, sadece yeni dosyayı yükle
+                $profileData['profile_picture'] = $this->fileService->upload($file, $path);
             }
-
-            // Yeni fotoğrafı kaydet
-            $filePath = $request->file('profile_picture')->store('profile_pictures', 'public');
-
-            // Dosya yolunu profildeki verilere ekle
-            $profileData['profile_picture'] = $filePath;
         }
 
         // Kullanıcı modelinde name güncellemesi

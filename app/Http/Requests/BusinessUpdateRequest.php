@@ -22,7 +22,7 @@ class BusinessUpdateRequest extends BaseRequest
             'description' => 'sometimes|nullable|string|max:500', // İşletme açıklaması için kural
             'location_latitude' => 'sometimes|nullable|numeric', // Enlem için kural
             'location_longitude' => 'sometimes|nullable|numeric', // Boylam için kural
-            'image_url' => 'sometimes|nullable|string|max:255', // İşletme resmi için kural
+            'image_url' => 'sometimes|nullable|file|mimes:jpg,jpeg,png|max:2048', // İşletme resmi için kural
             'opening_time' => 'sometimes|nullable|string|max:10', // Açılış saati için kural
             'closing_time' => 'sometimes|nullable|string|max:10', // Kapanış saati için kural
             'slug' => 'sometimes|required|string|max:255|unique:businesses,slug,' .$this->user()->business->id, // Slug için kural
@@ -43,6 +43,9 @@ class BusinessUpdateRequest extends BaseRequest
             'closing_time.max' => 'Kapanış saati en fazla 10 karakter olmalıdır.',
             'slug.required' => 'Slug zorunludur.',
             'slug.unique' => 'Bu slug zaten mevcut.',
+            'image_url.file' => 'Yüklenen dosya bir resim olmalıdır.',
+            'image_url.mimes' => 'Resim dosyası yalnızca jpg, jpeg veya png formatında olmalıdır.',
+            'image_url.max' => 'Resim dosyası en fazla 2MB boyutunda olmalıdır.',
         ];
     }
 }

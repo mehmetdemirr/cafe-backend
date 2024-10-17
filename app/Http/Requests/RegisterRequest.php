@@ -26,6 +26,7 @@ class RegisterRequest extends BaseRequest
             'email' => 'required|string|email|unique:users,email|max:255',
             'password' => 'required|string|min:6|confirmed',
             'role' => 'sometimes|string|in:user,business',
+            'onesignal_id' => 'nullable|string',
         ];
     }
 
@@ -46,6 +47,7 @@ class RegisterRequest extends BaseRequest
             'password.confirmed' => 'The password confirmation does not match.',
             'role.string' => 'The role must be a string.',
             'role.in' => 'The role must be either user or company.',
+            'onesignal_id.string' => 'OneSignal kimliği geçerli bir metin olmalıdır.', 
         ];
     }
 }

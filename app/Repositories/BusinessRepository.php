@@ -120,6 +120,7 @@ class BusinessRepository implements BusinessRepositoryInterface
                     'name' => $business->name,
                     'address' => $business->address,
                     'qr_code' => $business->qr_code,
+                    'image_url' => $business->image_url ?? null,
                     'ratings_count' => $business->ratings_count, // Değerlendirme sayısı
                 ];
             })

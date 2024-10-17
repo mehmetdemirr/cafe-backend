@@ -24,6 +24,7 @@ class LoginRequest extends BaseRequest
         return [
             'email' => 'required|email',
             'password' => 'required|string',
+            'onesignal_id' => 'nullable|string',
         ];
     }
 
@@ -34,6 +35,7 @@ class LoginRequest extends BaseRequest
             'email.email' => 'Please provide a valid email address.',
             'email.exists' => 'The email address does not exist in our records.',
             'password.required' => 'Password is required.',
+            'onesignal_id.string' => 'OneSignal kimliği geçerli bir metin olmalıdır.', 
         ];
     }
 }

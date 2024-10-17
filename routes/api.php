@@ -59,7 +59,7 @@ Route::middleware(["log"])->group(function () {
             Route::post('{id}/rate', [BusinessController::class, 'rate']);
             // İşletme puanlarını listeleme
             Route::get('{id}/ratings', [BusinessController::class, 'ratings']);
-            Route::put('/', [BusinessController::class, 'update']);
+            Route::post('/', [BusinessController::class, 'update']);
             Route::get('/all', [BusinessController::class, 'index']);
             Route::get('/nearby', [BusinessController::class, 'nearby']);
             Route::get('/', [BusinessController::class, 'show']);

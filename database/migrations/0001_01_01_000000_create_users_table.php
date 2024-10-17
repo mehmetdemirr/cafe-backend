@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->boolean('is_suspended')->default(false);
             $table->rememberToken();
+            $table->string('onesignal_id')->nullable();
             $table->timestamps();
         });
 

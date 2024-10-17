@@ -14,6 +14,7 @@ use App\Interfaces\MenuCategoryRepositoryInterface;
 use App\Interfaces\MenuItemRepositoryInterface;
 use App\Interfaces\MessageRepositoryInterface;
 use App\Interfaces\NotificationRepositoryInterface;
+use App\Interfaces\OneSignalRepositoryInterface;
 use App\Interfaces\ReportInterface;
 use App\Interfaces\SupportMessageRepositoryInterface;
 use App\Interfaces\UserProfileRepositoryInterface;
@@ -29,6 +30,7 @@ use App\Repositories\MenuCategoryRepository;
 use App\Repositories\MenuItemRepository;
 use App\Repositories\MessageRepository;
 use App\Repositories\NotificationRepository;
+use App\Repositories\OneSignalRepository;
 use App\Repositories\ReportRepository;
 use App\Repositories\SupportMessageRepository;
 use App\Repositories\UserProfileRepository;
@@ -64,6 +66,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $this->app->singleton(\App\Services\FileService::class, function ($app) {
+            return new \App\Services\FileService();
+        });
     }
 }

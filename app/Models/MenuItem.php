@@ -15,7 +15,7 @@ class MenuItem extends Model
         'menu_category_id',
         'business_id',    
         'is_available',  
-        'additional_info',   // Ek bilgi
+        'additional_info',
         'calories',
         'image_url',        
     ];

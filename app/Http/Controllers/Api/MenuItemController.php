@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MenuItemRequest;
 use App\Interfaces\MenuItemRepositoryInterface;
+use App\Services\FileService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
@@ -12,10 +13,12 @@ use Illuminate\Support\Facades\Storage;
 class MenuItemController extends Controller
 {
     protected $menuItemRepository;
+    protected $fileService;
 
-    public function __construct(MenuItemRepositoryInterface $menuItemRepository)
+    public function __construct(MenuItemRepositoryInterface $menuItemRepository,FileService $fileService)
     {
         $this->menuItemRepository = $menuItemRepository;
+        $this->fileService = $fileService;
     }
 
     // Retrieve all menu items for the user's business
@@ -74,15 +77,14 @@ class MenuItemController extends Controller
             ], 400);
         }
 
-        // Dosya yükleme
+        $imageUrl = null;
         if ($request->hasFile('image_url')) {
-            $imagePath = $request->file('image_url')->store('menu_items', 'public');
-            $fullImageUrl = asset('storage/' . $imagePath); // Tam URL oluşturma
+            $imageUrl = $this->fileService->upload($request->file('image_url'), 'menu_items'); // Dosya yükle
         }
 
         $data = array_merge($request->validated(), [
             'business_id' => $businessId,
-            'image_url' =>  $fullImageUrl ?? null, // Görsel varsa tam URL'yi kaydet
+            'image_url' =>  $imageUrl ?? null, // Görsel varsa tam URL'yi kaydet
         ]);
 
         $item = $this->menuItemRepository->create($data);
@@ -120,19 +122,17 @@ class MenuItemController extends Controller
             ], 400);
         }
 
-        // Resim dosyası kontrolü ve eski resmi silme
-        if ($request->hasFile('image_url')) {
+         // Resim dosyası kontrolü ve eski resmi silme
+         if ($request->hasFile('image_url')) {
             if ($item['image_url']) {
-                // Eski resim URL'sinden dosya yolunu elde etme
-                $oldImagePath = str_replace(asset('storage') . '/', '', $item['image_url']);
-                Storage::disk('public')->delete($oldImagePath); // Eski resmi sil
+                $this->fileService->delete($item['image_url']); // Eski resmi sil
             }
-            $imagePath = $request->file('image_url')->store('menu_items', 'public'); // Yeni resmi yükle
-            $fullImageUrl = asset('storage/' . $imagePath); // Yeni tam URL
+            $imageUrl = $this->fileService->upload($request->file('image_url'), 'menu_items'); // Yeni resmi yükle
         }
+        
         $updated = $this->menuItemRepository->update($id, array_merge(
             $request->validated(),
-            ['image_url' => $fullImageUrl ?? $item['image_url']] // Yeni resim varsa güncelle, yoksa mevcut kalsın
+            ['image_url' => $imageUrl ?? $item['image_url']] // Yeni resim varsa güncelle, yoksa mevcut kalsın
         ));
 
         return response()->json([
@@ -168,9 +168,7 @@ class MenuItemController extends Controller
 
         // Resmi sil
         if ($item['image_url']) {
-            // URL'den dosya yolunu almak
-            $imagePath = str_replace(asset('storage') . '/', '', $item['image_url']);
-            Storage::disk('public')->delete($imagePath); // Resmi sil
+            $this->fileService->delete($item['image_url']); // Resmi sil
         }
 
         $this->menuItemRepository->delete($id);

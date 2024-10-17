@@ -35,6 +35,10 @@ class AuthController extends Controller
             if (Auth::attempt($credentials)) {
                 $user = Auth::user();
                 $user = $request->user()->load('roles');
+
+                 // OneSignal ID'yi güncelle
+                $user->update(['onesignal_id' => $request->input('onesignal_id')]);
+
                 $token = $loginUser->createToken('token')->plainTextToken;
                 return response()->json([
                     'success'=> true,
@@ -64,6 +68,7 @@ class AuthController extends Controller
             'name' => $request['name'],
             'email' => $request['email'],
             'password' => Hash::make($request['password']),
+            'onesignal_id' => $request->input('onesignal_id'),
         ]);
 
         $role = $request->validated('role');
@@ -120,9 +125,12 @@ class AuthController extends Controller
         ], 200);
     }
 
-    public function logout(): JsonResponse
+    public function logout(Request $request): JsonResponse
     {
-        $user = Auth::user();
+        $user = $request->user();
+
+        // Kullanıcının onesignal_id'sini null yap
+        $user->update(['onesignal_id' => null]);
 
         // Kullanıcının tüm tokenlarını geçersiz kıl
         PersonalAccessToken::where('tokenable_id', $user->id)->delete();

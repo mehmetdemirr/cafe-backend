@@ -10,16 +10,19 @@ use App\Http\Requests\BusinessCreateRequest;
 use App\Http\Requests\BusinessUpdateRequest;
 use App\Http\Requests\NearbyRequest;
 use App\Http\Requests\RateBusinessRequest;
+use App\Services\FileService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
 class BusinessController extends Controller
 {
     protected $businessRepository;
+    protected $fileService;
 
-    public function __construct(BusinessRepositoryInterface $businessRepository)
+    public function __construct(BusinessRepositoryInterface $businessRepository,FileService $fileService)
     {
         $this->businessRepository = $businessRepository;
+        $this->fileService = $fileService;
     }
 
     // public function store(BusinessCreateRequest $request): JsonResponse
@@ -53,7 +56,28 @@ class BusinessController extends Controller
         $validatedData = $request->validated();
         $businessId = $request->user()->business->id;
 
+        // Profil fotoğrafı varsa güncellenecek, önceki fotoğrafı sil ve yeni fotoğrafı ekle
+        if ($request->hasFile('image_url')) {
+            // Eski fotoğraf yolunu al
+            $oldFilePath =$request->user()->business->image_url ?? null;
+    
+            // Yeni fotoğrafı yükle
+            $file = $request->file('image_url');
+            $path = 'business_pictures';
+    
+            // Eski dosyayı sil ve yeni dosyayı yükle
+            // Eğer eski dosya yolu mevcutsa, eski dosyayı sil ve yeni dosyayı yükle
+            if ($oldFilePath) {
+                $updatedFilePath = $this->fileService->update($file, $oldFilePath, $path);
+                $validatedData['image_url'] = $updatedFilePath; // Yeni dosya yolunu ekle
+            } else {
+                // Eğer eski dosya yolu yoksa, sadece yeni dosyayı yükle
+                $validatedData['image_url'] = $this->fileService->upload($file, $path);
+            }
+        }
+
         $updated = $this->businessRepository->update($businessId, $validatedData);
+
         if ($updated) {
             return response()->json([
                 'success' => true,
