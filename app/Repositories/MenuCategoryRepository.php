@@ -16,9 +16,9 @@ class MenuCategoryRepository implements MenuCategoryRepositoryInterface
         return MenuCategory::where('business_id', $businessId)->get()->toArray();
     }
 
-    public function findById(int $id): ?array
+    public function findById(int $id)
     {
-        return MenuCategory::find($id)?->toArray();
+        return MenuCategory::find($id);
     }
 
     public function create(array $data): array

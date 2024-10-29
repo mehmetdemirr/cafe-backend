@@ -9,7 +9,7 @@ interface MenuCategoryRepositoryInterface
 {
     public function getAllByBusinessId(int $businessId): array;
 
-    public function findById(int $id): ?array;
+    public function findById(int $id);
 
     public function create(array $data): array;
 

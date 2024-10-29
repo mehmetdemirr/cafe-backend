@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class BusinessEntryWithLocationRequest extends FormRequest
+class BusinessEntryWithLocationRequest extends BaseRequest
 {
     public function authorize()
     {

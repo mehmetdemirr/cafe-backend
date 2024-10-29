@@ -8,6 +8,7 @@ use App\Interfaces\BusinessRepositoryInterface;
 use App\Interfaces\CampaignInterface;
 use App\Interfaces\CategoryRepositoryInterface;
 use App\Interfaces\ComplaintRepositoryInterface;
+use App\Interfaces\EventRepositoryInterface;
 use App\Interfaces\LoyaltyPointRepositoryInterface;
 use App\Interfaces\MatchRepositoryInterface;
 use App\Interfaces\MenuCategoryRepositoryInterface;
@@ -24,6 +25,7 @@ use App\Repositories\BusinessRepository;
 use App\Repositories\CampaignRepository;
 use App\Repositories\CategoryRepository;
 use App\Repositories\ComplaintRepository;
+use App\Repositories\EventRepository;
 use App\Repositories\LoyaltyPointRepository;
 use App\Repositories\MatchRepository;
 use App\Repositories\MenuCategoryRepository;
@@ -59,6 +61,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(MessageRepositoryInterface::class, MessageRepository::class);
         $this->app->bind(ReportInterface::class, ReportRepository::class);
         $this->app->bind(BusinessEntryRepositoryInterface::class, BusinessEntryRepository::class);
+        $this->app->bind(EventRepositoryInterface::class, EventRepository::class);
     }
 
     /**

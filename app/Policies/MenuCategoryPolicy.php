@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\enum\UserRoleEnum;
 use App\Models\MenuCategory;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -13,7 +14,10 @@ class MenuCategoryPolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        if($user->business == null){
+            return false;
+        }
+        return $user->hasRole(UserRoleEnum::BUSINESS);
     }
 
     /**
@@ -29,7 +33,7 @@ class MenuCategoryPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return $user->hasRole(UserRoleEnum::BUSINESS);
     }
 
     /**
@@ -37,7 +41,11 @@ class MenuCategoryPolicy
      */
     public function update(User $user, MenuCategory $menuCategory): bool
     {
-        return true;
+        if(!$user->hasRole(UserRoleEnum::ADMIN) ||  $user->business == null){
+            return false;
+        }
+        return $user->hasRole(UserRoleEnum::ADMIN) ||
+        ($user->hasRole(UserRoleEnum::BUSINESS) && $user->business->id == $menuCategory->business_id);
     }
 
     /**
@@ -45,7 +53,11 @@ class MenuCategoryPolicy
      */
     public function delete(User $user, MenuCategory $menuCategory): bool
     {
-        return true;
+        if(!$user->hasRole(UserRoleEnum::ADMIN) ||  $user->business == null){
+            return false;
+        }
+        return $user->hasRole(UserRoleEnum::ADMIN) ||
+        ($user->hasRole(UserRoleEnum::BUSINESS) && $user->business->id == $menuCategory->business_id);
     }
 
     /**

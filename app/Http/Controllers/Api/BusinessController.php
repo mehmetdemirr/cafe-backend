@@ -10,9 +10,11 @@ use App\Http\Requests\BusinessCreateRequest;
 use App\Http\Requests\BusinessUpdateRequest;
 use App\Http\Requests\NearbyRequest;
 use App\Http\Requests\RateBusinessRequest;
+use App\Models\Business;
 use App\Services\FileService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class BusinessController extends Controller
 {
@@ -53,6 +55,7 @@ class BusinessController extends Controller
 
     public function update(BusinessUpdateRequest $request): JsonResponse
     {
+        Gate::authorize('update', Business::class);
         $validatedData = $request->validated();
         $businessId = $request->user()->business->id;
 
@@ -115,6 +118,7 @@ class BusinessController extends Controller
 
     public function show(Request $request): JsonResponse
     {
+        Gate::authorize('view', Business::class);
         $businessId =  $request->user()->business->id;
         $business = $this->businessRepository->find($businessId);
         if ($business) {
@@ -136,6 +140,7 @@ class BusinessController extends Controller
     // Slug ile işletme gösterme
     public function showBySlug(string $slug): JsonResponse
     {
+        Gate::authorize('view', Business::class);
         $business = $this->businessRepository->findBySlug($slug);
         if ($business) {
             return response()->json([
@@ -155,6 +160,7 @@ class BusinessController extends Controller
 
     public function index(): JsonResponse
     {
+        Gate::authorize('viewAny', Business::class);
         $businesses = $this->businessRepository->all();
         return response()->json([
             'success' => true,
@@ -184,6 +190,7 @@ class BusinessController extends Controller
 
     public function favoriteBusinesses(Request $request): JsonResponse
     {
+        Gate::authorize('viewFavorites', Business::class);
         $userId = $request->user()->id;
         $favorites = $this->businessRepository->getFavoriteBusinesses($userId);
         return response()->json([
@@ -196,6 +203,7 @@ class BusinessController extends Controller
 
     public function addToFavorites(Request $request,$id): JsonResponse
     {
+        Gate::authorize('addToFavorites', Business::class);
         $userId = $request->user()->id;
         // İşletmenin var olup olmadığını kontrol et
         if (!$this->businessRepository->exists(['id' => $id])) {
@@ -235,6 +243,7 @@ class BusinessController extends Controller
     
     public function removeFromFavorites(Request $request,$id): JsonResponse
     {
+        Gate::authorize('removeFromFavorites', Business::class);
         $userId = $request->user()->id;
         $removed = $this->businessRepository->removeFromFavorites($id, $userId);
         return $removed ? response()->json([

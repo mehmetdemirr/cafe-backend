@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Interfaces\CategoryRepositoryInterface;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 
 class CategoryController extends Controller
 {
@@ -20,6 +22,7 @@ class CategoryController extends Controller
     // Tüm kategorileri listele
     public function index(): JsonResponse
     {
+        Gate::authorize('viewAny', Category::class);
         $categories = $this->categoryRepository->all();
         return response()->json([
             'success' => true,
@@ -32,6 +35,7 @@ class CategoryController extends Controller
     // Bir kategori getir
     public function show($id): JsonResponse
     {
+        Gate::authorize('view', Category::class);
         $category = $this->categoryRepository->find($id);
 
         if (!$category) {
@@ -54,6 +58,7 @@ class CategoryController extends Controller
     // Yeni kategori ekle
     public function store(StoreCategoryRequest $request): JsonResponse
     {
+        Gate::authorize('create', Category::class);
         // Yüklenen resmin yolunu al
         $imagePath = null;
         if ($request->hasFile('image')) {
@@ -82,6 +87,10 @@ class CategoryController extends Controller
             'name' => 'sometimes|required|string|max:255',
         ]);
 
+        $category = $this->categoryRepository->find($id);
+
+        Gate::authorize('update', $category);
+
         $updated = $this->categoryRepository->update($id, $data);
 
         return $updated ? response()->json([
@@ -100,6 +109,8 @@ class CategoryController extends Controller
     // Kategoriyi sil
     public function destroy($id): JsonResponse
     {
+        $category = $this->categoryRepository->find($id);
+        Gate::authorize('delete', $category);
         $deleted = $this->categoryRepository->delete($id);
 
         return $deleted ? response()->json([

@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MenuCategoryRequest;
 use App\Interfaces\MenuCategoryRepositoryInterface;
+use App\Models\MenuCategory;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 
 class MenuCategoryController extends Controller
 {
@@ -20,6 +22,7 @@ class MenuCategoryController extends Controller
      // Business user retrieves all categories for their business
     public function index(Request $request): JsonResponse
     {
+        Gate::authorize('viewAny', MenuCategory::class);
         $businessId = $request->user()->business->id; // Get the business ID
         $categories = $this->menuCategoryRepository->getAllByBusinessId($businessId);
 
@@ -83,7 +86,7 @@ class MenuCategoryController extends Controller
                 'errors' => 'Kategori bulunamadı.',
             ], 400); // Bad Request
         }
-
+        Gate::authorize('update', $category);
         $updated = $this->menuCategoryRepository->update($id, $request->validated());
 
         if (!$updated) {
@@ -117,6 +120,7 @@ class MenuCategoryController extends Controller
             ], 404);
         }
 
+        Gate::authorize('delete', $category);
         $this->menuCategoryRepository->delete($id);
 
         return response()->json([

@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\BusinessRatingController;
 use App\Http\Controllers\Api\CampaignController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ComplaintController;
+use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\LoyaltyPointController;
 use App\Http\Controllers\Api\MatchController;
 use App\Http\Controllers\Api\MenuCategoryController;
@@ -160,6 +161,12 @@ Route::middleware(["log"])->group(function () {
             Route::post('/is-user-in-cafe', [BusinessEntryController::class, 'isUserInCafe']);
         });
 
+        Route::prefix('events')->group(function () {
+            Route::get('/active', [EventController::class, 'getFavoriteBusinessActiveEvents']);
+            Route::post('/create', [EventController::class, 'createEvent']);
+            Route::put('/update/{id}', [EventController::class, 'updateEvent']);
+            Route::delete('/delete/{id}', [EventController::class, 'deleteEvent']);
+        });
 
         
         // //admin route
